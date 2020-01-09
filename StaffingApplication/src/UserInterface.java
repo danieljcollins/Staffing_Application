@@ -16,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -323,14 +324,26 @@ public class UserInterface extends Application{
 		// previous layout code, likely will be deleted when layout is settled to my preference
         //((Group) scene.getRoot()).getChildren().addAll(dataTabPane);
 		
-		
+		/*
 		// alternate layout code GridPane
 		GridPane gridPane = new GridPane();
 		
 		gridPane.setAlignment(Pos.CENTER);
 		gridPane.add(dataTabPane, 0, 0);
 		
-		Scene scene = new Scene(gridPane);		
+		Scene scene = new Scene(gridPane);
+		*/
+		
+		// alternate layout code BorderPane
+		BorderPane borderPane = new BorderPane();
+		//HBox hbox = addHBox()
+		//border.setTop(hbox);
+		//border.setLeft(addVBox());
+		//addStackPane(hbox);         // Add stack to HBox in top region
+
+		borderPane.setCenter(dataTabPane);		
+		
+		Scene scene = new Scene(borderPane);
  
         stage.setScene(scene);
         stage.show();
