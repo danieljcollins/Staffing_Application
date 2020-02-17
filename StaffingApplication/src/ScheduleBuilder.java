@@ -45,7 +45,7 @@ public class ScheduleBuilder{
 			for(int i = 0; i < shifts.size(); i++) {
 				for(int j = 0; j < employees.size(); j++) {					
 					if(shifts.get(i).getIsFilled(dayNumber) == false) {	// if it's not already filled, let's try to fill it
-						if(notScheduled(dayNumber, shifts.get(i), employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j))) {						
+						if(trainingCheck(employees.get(j), shifts.get(i)) && notScheduled(dayNumber, shifts.get(i), employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j))) {						
 							fillShift(dayNumber, shifts.get(i), employees.get(j));
 							//break;	// the shift has been filled, so move on to the next shift iteration
 						}
@@ -68,19 +68,17 @@ public class ScheduleBuilder{
 		shifts.get( s.getShiftID() ).setEmployeeName(dNum, e.getEmployeeName() );
 		shifts.get( s.getShiftID() ).setIsFilled(dNum, true);
 		
-		// employee state code:		
-		System.out.println("Hours Worked Var Before: " + employees.get( e.getEmployeeID() ).hoursWorkedThisPayPeriod );
-		System.out.println("Days Worked Var Before: " + employees.get( e.getEmployeeID() ).daysConsecutivelyWorked );
+		// employee state display code:		
+		//System.out.println("Hours Worked Var Before: " + employees.get( e.getEmployeeID() ).hoursWorkedThisPayPeriod );
+		//System.out.println("Days Worked Var Before: " + employees.get( e.getEmployeeID() ).daysConsecutivelyWorked );
 		
 		e.hoursWorkedThisPayPeriod += 8;
 		e.hoursWorkedTotal += 8;
 		e.daysConsecutivelyWorked += 1;
 		
-		System.out.println("Hours Worked Var After: " + employees.get( e.getEmployeeID() ).hoursWorkedThisPayPeriod );
-		
-		System.out.println("Days Worked Var After: " + employees.get( e.getEmployeeID() ).daysConsecutivelyWorked );
-		
-		System.out.println("Filled Shift Name: " + shifts.get(s.getShiftID()).shiftName + " with: " + employees.get(e.getEmployeeID()).getEmployeeName());		
+		//System.out.println("Hours Worked Var After: " + employees.get( e.getEmployeeID() ).hoursWorkedThisPayPeriod );		
+		//System.out.println("Days Worked Var After: " + employees.get( e.getEmployeeID() ).daysConsecutivelyWorked );		
+		//System.out.println("Filled Shift Name: " + shifts.get(s.getShiftID()).shiftName + " with: " + employees.get(e.getEmployeeID()).getEmployeeName());		
 	}
 			
 	// new code section: business scheduling rule methods which will filter through shift and employee data to populate shifts
@@ -103,6 +101,9 @@ public class ScheduleBuilder{
 	
 	// will check seniority of employee to ascertain shift assignment order (highest seniority first)
 	// returns employee ID of next highest employee
+	// this is currently unnneccessary since after the employee data is migrated from the database, the data
+	// is sorted by highest seniority first. therefore the next available employee will have the highest seniority or will be
+	// tied in ranking with the next employee
 	public boolean seniorityCheck(int empIndex){
 		//int maxHoursFound = 0;
 		//int employeeIdMaxSeniorityFound = 0;
@@ -117,25 +118,52 @@ public class ScheduleBuilder{
 	// will check if employee has met 73 hours of work in the pay period or less, lest the employee need to be paid for overtime at a higher rate of pay	// 
 	public boolean overTimeCheck(Employee e){
 		if(e.getHoursWorkedThisPayPeriod() >= 73) {	// in this system, all shifts are 8 hours so one additional shift will put them into 81 hours, one hour of overtime pay, which we will try to avoid
-			System.out.println("Employee : " + e.getEmployeeName() + " has reached over time.");
+			//System.out.println("Employee : " + e.getEmployeeName() + " has reached over time.");
 			return false;	
 			
 		}
 		return true;	// here I use true to indicate that they have "passed" the test, and are a candidate for a shift
 	}
 	
-	public boolean daysConsecutivelyWorkedCheck(Employee e) {
+	public boolean daysConsecutivelyWorkedCheck(Employee e){
 		if(e.getDaysConsecutivelyWorked() < 5) {			
 			return true;	// hard-coding in 5 consecutive days, after which they'll not be scheduled to recouperate			
 		}
 		else {
-			System.out.println("Employee: " + e.getEmployeeName() + " has worked 5 days and will get a day off now.");
+			//System.out.println("Employee: " + e.getEmployeeName() + " has worked 5 days and will get a day off now.");
 			return false;
 		}		
 	}
 	
 	// will check if employee has the necessary training for the shift that they are next in line for
-	public boolean trainingCheck(int employeeID, String shiftType){		
+	public boolean trainingCheck(Employee e, Shift s){
+		if(s.getRequiredTraining().equals("P")) {
+			//System.out.println("This shift being filled requires Pool training");
+			if(e.getPool()) {
+				//System.out.println("Employee is trained for Pool shifts and is eligible");
+				return true;				
+			}
+		}
+		else if(s.getRequiredTraining().equals("L")) {
+			if(e.getLinen()) {
+				//System.out.println("Employee is trained for Linen shifts and is eligible");
+				return true;
+				
+			}
+		}
+		else if(s.getRequiredTraining().equals("D")) {
+			if(e.getDock()) {
+				//System.out.println("Employee is trained for Dock shifts and is eligible");
+				return true;
+			}
+		}
+		else if(s.getRequiredTraining().equals("M")) {
+			if(e.getMdr()) {
+				//System.out.println("Employee is trained for MDR shifts and is eligible");
+				return true;
+			}
+		}
+		//System.out.println("Employee " + e.getFirstName() + " is not trained for the shift and is ineligible");
 		return false;
 	}
 }

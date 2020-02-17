@@ -1,0 +1,14 @@
+DONE: Implement concrete date feature in schedule tab via drop down menus which select the start date and end date of a pay period
+
+Save the created schedules back to the database for archiving. From there, be accessible to bring-up old schedules in the application
+Allow for changes to be made to the database from the application. Shift, Employee and Schedule data specifically which will be saved to the database (ie. adding and removing employees, shifts, changes to shifts etc.)
+
+Add exporting features, such as exporting schedule data to .pdf or xml, json, or text for usage in other applications.
+- exporting to be viewable by other employees (to see when they have to work)
+- exporting payroll data, for usage with their payroll application
+- exporting employee data, for usage with human resources purposes
+
+Implement payroll tab, which calculate each employees income based on their hours worked. Based on expanded schedules, have year to date features for their hours worked, income etc.
+
+IN PROGRESS (partially implemented): Add click-able employee names in schedule tab, allow user to interact with each employee. Such as, coding the employee as sick, which would save the sick day to the Employee object, and/or save it to the database. And even better, ideally show a list of available employees to cover that shift. Possibly bringing up the employee names and phone numbers for the staffing employee to then call and request that they come into work to cover that shift
+ 

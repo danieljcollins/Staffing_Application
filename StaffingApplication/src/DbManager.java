@@ -87,7 +87,7 @@ public class DbManager {
     public String runSqlStatement(String sqlQuery) {
         String result = "";
         try {
-            Statement statement = createConnection().createStatement();//ResultSet.TYPE_SCROLL_INSENSITIVE, 
+            Statement statement = createConnection().createStatement();	//ResultSet.TYPE_SCROLL_INSENSITIVE, 
             //ResultSet.CONCUR_READ_ONLY);                           
 
             rs = statement.executeQuery(sqlQuery);

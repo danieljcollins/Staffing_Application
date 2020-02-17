@@ -1,6 +1,6 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+// this file isn't currently being used
 public class WorkDay {
 	
 	ObservableList<Shift> shifts = FXCollections.observableArrayList();

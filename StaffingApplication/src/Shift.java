@@ -28,39 +28,19 @@ public class Shift{
 	
 	String trainingRequired;	// "pool", linen, mdr, or dock
 	
-	LocalTime startTime;
-	LocalTime endTime;
-	
-	//Boolean isFilled = false;	// indicates whether the shift has been filled by an employee or not
-	/*
-	Boolean isFilledDay1 = false;
-	Boolean isFilledDay2 = false;
-	Boolean isFilledDay3 = false;
-	Boolean isFilledDay4 = false;
-	Boolean isFilledDay5 = false;
-	Boolean isFilledDay6 = false;
-	Boolean isFilledDay7 = false;
-	Boolean isFilledDay8 = false;
-	Boolean isFilledDay9 = false;
-	Boolean isFilledDay10 = false;
-	Boolean isFilledDay11 = false;
-	Boolean isFilledDay12 = false;
-	Boolean isFilledDay13 = false;
-	Boolean isFilledDay14 = false;
-	*/
+	LocalTime startTime;	// the time of day when the shift begins
+	LocalTime endTime;		// the time of day when the shift ends	
 	
 	Boolean [] isShiftFilled = new Boolean[14];	
 	
 	// constructor
-	public Shift(int sID, String sName, LocalTime sTime, LocalTime eTime){
+	public Shift(int sID, String sName, LocalTime sTime, LocalTime eTime, String requiredTraining){
 		this.shiftID = sID;
 		this.shiftName = sName;
 		//this.dayNumber = dNum;
 		this.startTime = sTime;
 		this.endTime = eTime;
-		
-		//employeeNames[0] = employeeNameDay1;   
-		//employeeNames[1] = employeeNameDay2;
+		this.trainingRequired = requiredTraining;		
 		
 		// initialize all shifts being unfilled (so no employeeNames will have been entered)
 		for(int i = 0; i < 14; i++) {
@@ -93,6 +73,10 @@ public class Shift{
 	
 	public LocalTime getEndTime() {
 		return this.endTime;
+	}
+	
+	public String getRequiredTraining() {
+		return trainingRequired;
 	}
 	
 	public String getEmployeeName(int dayNum) {
@@ -157,8 +141,7 @@ public class Shift{
 	
 	public Boolean getIsFilled(int dayNum) {
 		return this.isShiftFilled[dayNum];
-	}
-	
+	}	
 	
 	//set methods ************************
 	public void setShiftName(String sn) {
@@ -224,8 +207,7 @@ public class Shift{
 		}
 		else if(dayNum == 13) {
 			this.employeeNameDay14 = empName;
-		}
-		
+		}		
 	}
 	
 	public void setIsFilled(int dayNum, Boolean f) {
