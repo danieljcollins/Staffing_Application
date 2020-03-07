@@ -1,14 +1,36 @@
-DONE: Implement concrete date feature in schedule tab via drop down menus which select the start date and end date of a pay period
+COMPLETED: Allow for user to switch two employees shifts, through "redeploy" button. Possibly implement a view of what shift is currently scheduled through a label, then the ChoiceBox selection of what shift to switch with, followed by a confirmation question either through a small custom window or dialog that confirms the choice. Then ensure that the changes are reflected in the schedule itself.
+BUG(COMPLETED, to watch out for): Schedule tab data doesn't always update visually after re-deploying an employee.
+IN PROGRESS: Assign empty shift from employee list (if auto-scheduler doesn't assign a shift, and/or someone is sick)
+UNADDRESSED: Shift Switching: Allow user to select an employee (and a shift) on Schedule tab. From ScheduleControls.java the select Switch Shift. Then select a second Employee/Shift from Schedule tab of UserInterface.java. Then the change should be reflected in the shifts ObservableList and so fourth.
 
-Save the created schedules back to the database for archiving. From there, be accessible to bring-up old schedules in the application
-Allow for changes to be made to the database from the application. Shift, Employee and Schedule data specifically which will be saved to the database (ie. adding and removing employees, shifts, changes to shifts etc.)
+UNADDRESSED: In Schedule Tools tab of UserInterface.java, add an "Import Schedule" feature. User would import an already created schedule from some source, such as a text file, XML, etc. And then it would load that data into the Schedule tab of UserInterface.java for manipulation/viewing.
 
-Add exporting features, such as exporting schedule data to .pdf or xml, json, or text for usage in other applications.
+COMPLETED: Implement concrete date feature in schedule tab via drop down menus which select the start date and end date of a pay period
+
+UNADDRESSED: Save the created schedules back to the database for archiving. From there, be accessible to bring-up old schedules in the application
+UNADDRESSED: Allow for changes to be made to the database from the application. Shift, Employee and Schedule data specifically which will be saved to the database (ie. adding and removing employees, shifts, changes to shifts etc.)
+
+UNADDRESSED: Add exporting features, such as exporting schedule data to .pdf or xml, json, or text for usage in other applications.
 - exporting to be viewable by other employees (to see when they have to work)
 - exporting payroll data, for usage with their payroll application
 - exporting employee data, for usage with human resources purposes
 
-Implement payroll tab, which calculate each employees income based on their hours worked. Based on expanded schedules, have year to date features for their hours worked, income etc.
+COMPLETED: Add click-able employee names in schedule tab, allow user to interact with each employee. Such as, coding the employee as sick, which would save the sick day to the Employee object, and/or save it to the database.
+COMPLETED: - when sick, I need to remove employee name from shift 
+And even better, ideally show a list of available employees to cover that shift. Possibly bringing up the employee names and phone numbers for the staffing employee to then call and request that they come into work to cover that shift
 
-IN PROGRESS (partially implemented): Add click-able employee names in schedule tab, allow user to interact with each employee. Such as, coding the employee as sick, which would save the sick day to the Employee object, and/or save it to the database. And even better, ideally show a list of available employees to cover that shift. Possibly bringing up the employee names and phone numbers for the staffing employee to then call and request that they come into work to cover that shift
+COMPLETED: Add click-able employee names in the Employee tab; 
+COMPLETED: from there, open up a new window or tab that shows information on that employee. 
+OPTIONAL: possibly the payroll information for that pay period, or year-to-date etc.
+OPTIONAL: Implement payroll tab, which calculate each employees income based on their hours worked. Based on expanded schedules, have year to date features for their hours worked, income etc.
+OPTIONAL: possibly a employee specific schedule that only includes their schedule information and not the entire list of shifts
+
+UNADDRESSED: User login screen
+- upon application start, a user login screen appears. Only approved employees (ie staffing employees) can access the application
+- additionally, have user account levels which allows for writing to the database, and other modifications. perhaps at least two, one for full access to everything and one for viewing only
+- perhaps a third where an employee who is scheduled through the program can sign in to the application to see their schedule, payroll etc but nothing else
+
+UNADDRESSED: Transaction History Feature:
+- when a user changes the schedule, adds sick days, or switches employees, it saves the user name who made the change, what was changed and the date for accountability reasons
+
  

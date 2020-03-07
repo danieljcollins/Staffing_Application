@@ -1,13 +1,16 @@
-// javafx implementation
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.event.EventHandler;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,38 +32,32 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-//import java.util
+
 import java.util.*;
+import javafx.util.Callback;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 /* This file will build the user interface using JavaFX 
  */
-public class UserInterface extends Application{	    
-	
-	ResultSet rs;
-	ResultSetMetaData rsmd;
-	int rsSize;
-		
-	// SQL queries
-	private final String queryEmployeeData = "SELECT * from employees;";
-    private final String queryShiftData = "SELECT * from shifts;";	
+public class UserInterface extends Application{	
 	
     ObservableList<Employee> employeeData = FXCollections.observableArrayList(); // will contain DB data	
-	
 	ObservableList<Shift> shiftData = FXCollections.observableArrayList(); // will contain DB data
 	
 	// GUI components
-	TableView<Shift> scheduleTableView = new TableView<Shift>(shiftData);
+	TableView<Shift> scheduleTableView;	// = new TableView<Shift>(shiftData);
 	TableView<Shift> shiftTableView;
 	TableView<Employee> employeeTableView;
 	
 	Tab employeeTab;
+	Tab scheduleTab = new Tab();	// create a tab for schedule table
 	
 	// schedule tools tab
 	DatePicker datePicker = new DatePicker();
@@ -84,138 +81,12 @@ public class UserInterface extends Application{
 	
 	Button exportToPDFButton, saveToDBButton, importFromXMLButton, exportToXMLButton;
                             	
-	public UserInterface(){		
-		DbManager dbm = new DbManager();
-		try{	// to do, move this Database logic to DbManager.java later, or a specific query Db class like "DbQuery.java"(a plan)
-			System.out.println("Starting DB Connection...");
-			dbm.createConnection();			
-			
-			/* employeeData will be populated from ResultSet
-			 * Here the program will query the database. 
-			 * From there, the program will obtain some information about the query results. 
-			 * (how many rows, columns etc.)
-			 * From there, for convenience ArrayList will be used to take the ResultSet and place the
-			 * data into a Java Object that can be conveniently used.			 
-			 */
-			dbm.runSqlStatement(queryEmployeeData);
-			
-			rs = dbm.getResultSet();
-			rsmd = dbm.getResultSetMetaData();
-			
-			// re-create the arrays for the JTable now that we have the ResultSet
-			int employeeDataColumnCount = rsmd.getColumnCount();
-			int employeeDataRowCount = dbm.getRsSize();
-			
-			// for diag print out
-			//System.out.println("data column count employee: " + employeeDataColumnCount);
-			//System.out.println("data row count employee: " + employeeDataRowCount);
-			
-			// populate the string array with the row data from the db result set			
-			int empId;
-			String empFirstName;
-			String empLastName;
-			String empEmail;
-			int empHoursWorkedTotal;
-			int sickDays;
-			Boolean empPool;
-			Boolean empMdr;
-			Boolean empLinen;
-			Boolean empDock;
-			
-			while(rs.next()){
-				empId = Integer.parseInt(rs.getString("id"))-1;	// subtract 1 to convert from sql based id to 0 based for java loops	
-				empFirstName = rs.getString("first_name");
-				empLastName = rs.getString("last_name");
-				empHoursWorkedTotal = Integer.parseInt(rs.getString("hours_worked"));
-				
-				sickDays = Integer.parseInt(rs.getString("sick_days"));
-				
-				empEmail = rs.getString("email");
-				
-				String tempPool = rs.getString("pool");
-				String tempMdr = rs.getString("mdr");
-				String tempLinen = rs.getString("linen");
-				String tempDock = rs.getString("dock");
-				
-				// convert MySQL's boolean which is represented as a 1 or 0 to a Java Boolean, since String.parseBoolean() does not recognize a String of 1 or 0 as true and false respectively
-				if(tempPool.contentEquals("1")) {
-					empPool = true;
-				}
-				else {
-					empPool = false;
-				}
-				
-				if(tempMdr.contentEquals("1")) {
-					empMdr = true;
-				}
-				else {
-					empMdr = false;
-				}
-				
-				if(tempLinen.contentEquals("1")) {
-					empLinen = true;
-				}
-				else {
-					empLinen = false;
-				}
-				
-				if(tempDock.contentEquals("1")) {
-					empDock = true;
-				}
-				else {
-					empDock = false;
-				}								
-				
-				// now add all of that to an Employee object
-				employeeData.add(new Employee(empId, empFirstName, empLastName, empHoursWorkedTotal, sickDays, empEmail, empPool, empLinen, empMdr, empDock));				
-			}
-						
-			// sort employeeData by seniority (hours_worked from Database)
-			Collections.sort(employeeData,  new SortByHoursWorked());
-			
-			//employeeData.forEach((n) -> System.out.println(n)); // diag print out				
-			
-			/* shiftData will be populated from ResultSet
-			 * Here the program will query the database. 
-			 * From there, the program will obtain some information about the query results. 
-			 * (how many rows, columns etc.)
-			 * From there, for convenience ArrayList will be used to take the ResultSet and place the
-			 * data into a Java Object that can be conveniently used.			
-			 */
-			dbm.runSqlStatement(queryShiftData);
-			
-			rs = dbm.getResultSet();
-			rsmd = dbm.getResultSetMetaData();		
-			
-			// diag print out
-			//System.out.println("data column count shift: " + rsmd.getColumnCount());
-			//System.out.println("data row count shift: " + dbm.getRsSize());
-			
-			// populate the string array with the row data from the db result set			
-			int shiftId;
-			String shiftName;
-			LocalTime shiftStartTime;
-			LocalTime shiftEndTime;
-			String shiftRequiredTraining;
-						
-			while(rs.next()){
-				shiftId = Integer.parseInt(rs.getString("id"))-1;	// subtract 1 to convert from sql based id to 0 based for java loops	
-				shiftName = rs.getString("shift_name");
-				shiftStartTime = LocalTime.parse(rs.getString("start_time"));				
-				shiftEndTime = LocalTime.parse(rs.getString("end_time"));
-				shiftRequiredTraining = rs.getString("required_training");
-								
-				shiftData.add(new Shift(shiftId, shiftName, shiftStartTime, shiftEndTime, shiftRequiredTraining));
-				//System.out.println("Required Training: " + shiftRequiredTraining);
-				//System.out.println("Shift: " + shiftName + " " + shiftStartTime + " " + shiftEndTime);				
-			}
-			
-			//shiftData.forEach((n) -> System.out.println(n)); // diag print out			
-			
-		} // ends try
-		catch(Exception e){
-			System.out.println("Error Type: " + e);
-		}
+	public UserInterface(){
+		DBShiftQuery dbsq = new DBShiftQuery();
+		this.shiftData = dbsq.getShiftData();
+		
+		DBEmployeeQuery dbeq = new DBEmployeeQuery();
+		this.employeeData = dbeq.getEmployeeData();		
 	} //ends constructor
 	
 	@Override
@@ -307,6 +178,24 @@ public class UserInterface extends Application{
         employeeTab.setContent(employeeTableView);
         dataTabPane.getTabs().add(employeeTab);
         
+		 // set up a user controls tab to generate schedule
+		Tab scheduleToolsTab = new Tab("Schedule Tools");
+		GridPane scheduleToolsGP = new GridPane();
+		scheduleToolsGP.setHgap(25);
+		scheduleToolsGP.setVgap(25);
+		scheduleToolsGP.setPadding(new Insets(25,25,25,25));
+		
+		Label datePickerLabel = new Label("Select first day of pay period to generate a schedule:");
+		datePicker = new DatePicker();
+		generateScheduleButton = new Button("Generate Schedule");
+		
+		scheduleToolsGP.add(datePickerLabel, 0, 0);
+		scheduleToolsGP.add(datePicker, 1, 0);
+		scheduleToolsGP.add(generateScheduleButton, 0, 2);		
+		
+		scheduleToolsTab.setContent(scheduleToolsGP);
+		dataTabPane.getTabs().add(scheduleToolsTab);	
+        
         // schedule table setup
 		TableColumn scheduleShiftNameCol = new TableColumn("Shift Name");
 		scheduleShiftNameCol.setMinWidth(100);
@@ -368,7 +257,8 @@ public class UserInterface extends Application{
 		employeeNameDay14Col.setMinWidth(150);
 		employeeNameDay14Col.setCellValueFactory(new PropertyValueFactory<Shift, String>("employeeNameDay14"));
 		
-		scheduleTableView.setItems(shiftData);		
+		scheduleTableView = new TableView<Shift>(shiftData);
+		//scheduleTableView.setContent(shiftData);		
 		scheduleTableView.getColumns().addAll(
 				scheduleShiftNameCol, 
 				employeeNameDay1Col, employeeNameDay2Col,
@@ -378,28 +268,10 @@ public class UserInterface extends Application{
 				employeeNameDay9Col, employeeNameDay10Col,
 				employeeNameDay11Col, employeeNameDay12Col,
 				employeeNameDay13Col, employeeNameDay14Col
-		);		
-		
-		// set up a user controls tab to generate schedule
-		Tab scheduleToolsTab = new Tab("Schedule Tools");
-		GridPane scheduleToolsGP = new GridPane();
-		scheduleToolsGP.setHgap(25);
-		scheduleToolsGP.setVgap(25);
-		scheduleToolsGP.setPadding(new Insets(25,25,25,25));
-		
-		Label datePickerLabel = new Label("Select first day of pay period to generate a schedule:");
-		datePicker = new DatePicker();
-		generateScheduleButton = new Button("Generate Schedule");
-		
-		scheduleToolsGP.add(datePickerLabel, 0, 0);
-		scheduleToolsGP.add(datePicker, 1, 0);
-		scheduleToolsGP.add(generateScheduleButton, 0, 2);		
-		
-		scheduleToolsTab.setContent(scheduleToolsGP);
-		dataTabPane.getTabs().add(scheduleToolsTab);		
+		);			
 		
 		// add schedule table tab
-		Tab scheduleTab = new Tab();	// create a tab for schedule table
+		//Tab scheduleTab = new Tab();	// create a tab for schedule table
 		scheduleTab.setText("Schedule");
 		
 		exportToPDFButton = new Button();
@@ -424,6 +296,9 @@ public class UserInterface extends Application{
 		
 		dataTabPane.getTabs().add(scheduleTab);
 		
+		// make ScheduleTab un-clickable until date range is set
+		scheduleTab.setDisable(true);
+		
 		// disable the ability for the user to close any tabs
 		shiftTab.closableProperty().setValue(false);
 		employeeTab.closableProperty().setValue(false);
@@ -439,46 +314,12 @@ public class UserInterface extends Application{
         stage.setScene(scene);
         stage.show();
         
-        handleEvents();	// run an initialization method to set up mouse events etc.        
-        
+        handleEvents();	// run an initialization method to set up mouse events etc.
+        handleScheduleControls();
     } // ends start()
 	
 	// this method will set up things like mouse events, button clicks, etc in it's own method
-	public void handleEvents() {		
-        // Creating the mouse event handler for clicking cells in scheduleTable
-		// the purpose of this handler is to allow the user to select an employee name on a particular shift (date, shift name)
-		// and then interact with that in various business ways. one example being to allow a user to
-		// indicate that the assigned employee is sick and will be unable to work that day
-		// another example would be to swap two employees's shifts
-        EventHandler<javafx.scene.input.MouseEvent> eventHandler = 
-           new EventHandler<javafx.scene.input.MouseEvent>() { 
-           
-           @Override 
-           public void handle(javafx.scene.input.MouseEvent e) {
-              scheduleTableView.getSelectionModel().setCellSelectionEnabled(true);
-              if(e.getClickCount() == 2) {
-	        	  TableColumn tableColumnSelected = scheduleTableView.getSelectionModel().getSelectedCells().get(rsSize).getTableColumn(); // the name of the column that was selected              
-	        	  int tableRowSelected = scheduleTableView.getSelectionModel().getSelectedCells().get(rsSize).getRow(); // the index of the row that was selected
-	        	  
-	        	  System.out.println( tableColumnSelected.getText() );
-	        	  String empName = (String)tableColumnSelected.getCellData(tableRowSelected);
-	        	  System.out.println( empName );
-	        	  //System.out.println("row = " + tableRowSelected);
-	        	  
-	        	  int midIndex = empName.indexOf(" ");
-	        	  String firstName = empName.substring(0, midIndex);
-	        	  String lastName = empName.substring(midIndex+1, empName.length());	        	  
-	        	  
-	        	  for(int i = 0; i < employeeData.size(); i++) {	        		  
-	        		  if( employeeData.get(i).getFirstName().equals(firstName) && employeeData.get(i).getLastName().equals(lastName) ){
-	        			  ScheduleControls sC = new ScheduleControls( firstName, lastName, employeeData.get(i), employeeTableView, tableColumnSelected.getText() );
-	    	        	  sC.showSheduleControls();	    	        	  
-	        		  }
-	        	  }	        	  
-              }
-           } 
-        };
-        scheduleTableView.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, eventHandler);        //Adding the event handler
+	public void handleEvents() {        
         
         // the purpose of this is to label the columns of the scheduleTable with the appropriate dates.
         // once the starting day is selected, the program can then name all subsequent columns according
@@ -502,12 +343,63 @@ public class UserInterface extends Application{
         		employeeNameDay11Col.setText(selectedDate.plusDays(10).toString());
         		employeeNameDay12Col.setText(selectedDate.plusDays(11).toString());
         		employeeNameDay13Col.setText(selectedDate.plusDays(12).toString());
-        		employeeNameDay14Col.setText(selectedDate.plusDays(13).toString());
+        		employeeNameDay14Col.setText(selectedDate.plusDays(13).toString());        		
+        		
+        		// enable the Schedule tab now that the dates have been set
+        		scheduleTab.setDisable(false);
         	}        	
-        }));
-        
-        
+        }));        
 	} // ends handleEvents()
+	
+	public void handleScheduleControls(){
+		// Creating the mouse event handler for clicking cells in scheduleTable
+		// the purpose of this handler is to allow the user to select an employee name on a particular shift (date, shift name)
+		// and then interact with that in various business ways. one example being to allow a user to
+		// indicate that the assigned employee is sick and will be unable to work that day
+		// another example would be to swap two employees's shifts for that day
+        EventHandler<javafx.scene.input.MouseEvent> eventHandler = 
+           new EventHandler<javafx.scene.input.MouseEvent>() { 
+           
+           @Override 
+           public void handle(javafx.scene.input.MouseEvent e) {
+              scheduleTableView.getSelectionModel().setCellSelectionEnabled(true);
+              if(e.getClickCount() == 2) {
+            	  
+            	  TableColumn tableColumnSelected = scheduleTableView.getSelectionModel().getSelectedCells().get(0).getTableColumn(); // the name of the column that was selected              
+	        	  int tableRowSelected = scheduleTableView.getSelectionModel().getSelectedCells().get(0).getRow(); // the index of the row that was selected
+	        	  	        	  
+	        	  // determine if the shift is empty and needs to be assigned, or whether the ScheduleControls.java needs to load
+	        	  // place code here
+	        	  
+	        	  Shift shiftSelected = shiftData.get(tableRowSelected);
+	        	  
+	        	  String dateSelected = tableColumnSelected.getText();
+	        	  int dayNumber = scheduleTableView.getSelectionModel().getSelectedCells().get(0).getColumn()-1;	// subtract 1 from index to account for the column of shift names in Schedule tab's shiftData TableView	        	  
+	        	  	        	  
+	        	  String empName = (String)tableColumnSelected.getCellData(tableRowSelected);
+	        	  	        	  
+	        	  if( empName.equals("") ){	// there's no employee assigned, so I'll open options to fill that shift with an employee
+	        		  System.out.println("Shift not assigned to this location");
+	        	  }
+	        	  else {	// there's an employee in that spot so I'll open ScheduleControls.java	        	  	        	  
+		        	  int midIndex = empName.indexOf(" ");
+		        	  String firstName = empName.substring(0, midIndex);
+		        	  String lastName = empName.substring(midIndex+1, empName.length());	        	  
+		        	  
+		        	  for(int i = 0; i < employeeData.size(); i++) {
+		        		  if( employeeData.get(i).getFirstName().equals(firstName) && employeeData.get(i).getLastName().equals(lastName) ){
+		        			  ScheduleControls sC = new ScheduleControls( firstName, lastName, employeeData.get(i), employeeTableView, scheduleTableView, dateSelected, dayNumber, shiftData, shiftSelected );
+		    	        	  sC.showSheduleControls();
+		    	        	  //shiftData = sC.getShiftData(); 	// shiftData is passed by reference	    	        	  
+		    	        	  scheduleTableView.refresh();	    	        	  
+		        		  }
+		        	  }
+	        	  }
+              }
+           } 
+        };
+        scheduleTableView.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, eventHandler);        //Adding the event handler      	
+	} // ends handleScheduleControls()
     
     public static void main(String[] args){    	
     	Application.launch(args);

@@ -1,4 +1,5 @@
 import java.time.LocalTime;
+import java.time.LocalDate;
 
 // this file represents one shift of a organization
 public class Shift{
@@ -9,24 +10,26 @@ public class Shift{
 	
 	// create 14 employeeName Strings, each will represent an employee filling this shift, once per day, for 14 days (a pay period)
 	
-	String employeeNameDay1 = " ";
-	String employeeNameDay2 = " ";
-	String employeeNameDay3 = " ";
-	String employeeNameDay4 = " ";
-	String employeeNameDay5 = " ";
-	String employeeNameDay6 = " ";
-	String employeeNameDay7 = " ";
-	String employeeNameDay8 = " ";
-	String employeeNameDay9 = " ";
-	String employeeNameDay10 = " ";
-	String employeeNameDay11 = " ";
-	String employeeNameDay12 = " ";
-	String employeeNameDay13 = " ";
-	String employeeNameDay14 = " ";	
+	String employeeNameDay1 = "";
+	String employeeNameDay2 = "";
+	String employeeNameDay3 = "";
+	String employeeNameDay4 = "";
+	String employeeNameDay5 = "";
+	String employeeNameDay6 = "";
+	String employeeNameDay7 = "";
+	String employeeNameDay8 = "";
+	String employeeNameDay9 = "";
+	String employeeNameDay10 = "";
+	String employeeNameDay11 = "";
+	String employeeNameDay12 = "";
+	String employeeNameDay13 = "";
+	String employeeNameDay14 = "";	
 
 	String[] employeeNames = new String[14];	
 	
 	String trainingRequired;	// "pool", linen, mdr, or dock
+	
+	LocalDate date;			// the calendar date of the shift
 	
 	LocalTime startTime;	// the time of day when the shift begins
 	LocalTime endTime;		// the time of day when the shift ends	
@@ -34,10 +37,11 @@ public class Shift{
 	Boolean [] isShiftFilled = new Boolean[14];	
 	
 	// constructor
-	public Shift(int sID, String sName, LocalTime sTime, LocalTime eTime, String requiredTraining){
+	public Shift(int sID, String sName, LocalDate dateValue, LocalTime sTime, LocalTime eTime, String requiredTraining){
 		this.shiftID = sID;
 		this.shiftName = sName;
 		//this.dayNumber = dNum;
+		this.date = dateValue;
 		this.startTime = sTime;
 		this.endTime = eTime;
 		this.trainingRequired = requiredTraining;		
@@ -163,7 +167,7 @@ public class Shift{
 	public void setEndTime(LocalTime et) {
 		this.endTime = et;
 	}
-	
+		
 	public void setEmployeeName(int dayNum, String empName) {
 		this.employeeNames[dayNum] = empName;
 		if(dayNum == 0) {
