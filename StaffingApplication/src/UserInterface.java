@@ -44,7 +44,8 @@ import javafx.util.Callback;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/* This file will build the user interface using JavaFX 
+/* This file will build the user interface using JavaFX
+ * From there, it will be the launcher of all other classes in this application. 
  */
 public class UserInterface extends Application{	
 	
@@ -368,9 +369,7 @@ public class UserInterface extends Application{
             	  TableColumn tableColumnSelected = scheduleTableView.getSelectionModel().getSelectedCells().get(0).getTableColumn(); // the name of the column that was selected              
 	        	  int tableRowSelected = scheduleTableView.getSelectionModel().getSelectedCells().get(0).getRow(); // the index of the row that was selected
 	        	  	        	  
-	        	  // determine if the shift is empty and needs to be assigned, or whether the ScheduleControls.java needs to load
-	        	  // place code here
-	        	  
+	        	  // determine if the shift is empty and needs to be assigned, or whether the ScheduleControls.java needs to load	        	  
 	        	  Shift shiftSelected = shiftData.get(tableRowSelected);
 	        	  
 	        	  String dateSelected = tableColumnSelected.getText();
@@ -378,19 +377,37 @@ public class UserInterface extends Application{
 	        	  	        	  
 	        	  String empName = (String)tableColumnSelected.getCellData(tableRowSelected);
 	        	  	        	  
-	        	  if( empName.equals("") ){	// there's no employee assigned, so I'll open options to fill that shift with an employee
-	        		  System.out.println("Shift not assigned to this location");
+	        	  if( empName.equals("") ){	// there's no employee assigned, so I'll open options to fill that shift with an employee	        		  
+	        		  //send employee to ScheduleBuilder.java to get a list of available employees
+	        		  ScheduleBuilder sb = new ScheduleBuilder(shiftData, employeeData);
+	        		  ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();
+	        		  availableEmployees = sb.getAvailableEmployees(shiftSelected, dayNumber);
+	        		  
+	        		  // send the returned list to ScheduleControl to display that list to the user for their selection
+	        		  Employee emptyEmployee = new Employee();
+	        		  ScheduleControls sC = new ScheduleControls( "Unassigned", "", emptyEmployee, employeeTableView, scheduleTableView, dateSelected, dayNumber, shiftData, shiftSelected, employeeData );
+	        		  sC.setAvailableEmployees(availableEmployees);
+    	        	  sC.showSheduleControls();
+    	        	  sC.showEmployeeList();
 	        	  }
-	        	  else {	// there's an employee in that spot so I'll open ScheduleControls.java	        	  	        	  
+	        	  else {	// there's an employee in that spot so I'll open ScheduleControls.java, with the Employee info populated there	        	  	        	  
 		        	  int midIndex = empName.indexOf(" ");
 		        	  String firstName = empName.substring(0, midIndex);
 		        	  String lastName = empName.substring(midIndex+1, empName.length());	        	  
 		        	  
 		        	  for(int i = 0; i < employeeData.size(); i++) {
 		        		  if( employeeData.get(i).getFirstName().equals(firstName) && employeeData.get(i).getLastName().equals(lastName) ){
-		        			  ScheduleControls sC = new ScheduleControls( firstName, lastName, employeeData.get(i), employeeTableView, scheduleTableView, dateSelected, dayNumber, shiftData, shiftSelected );
+		        			//send employee to ScheduleBuilder.java to get a list of available employees
+			        		  ScheduleBuilder sb = new ScheduleBuilder(shiftData, employeeData);
+			        		  ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();
+			        		  availableEmployees = sb.getAvailableEmployees(shiftSelected, dayNumber);
+			        		  
+			        		  // send the returned list to ScheduleControl to display that list to the user for their selection
+			        		  ScheduleControls sC = new ScheduleControls( firstName, lastName, employeeData.get(i), employeeTableView, scheduleTableView, dateSelected, dayNumber, shiftData, shiftSelected, employeeData );
+			        		  sC.setAvailableEmployees(availableEmployees);
 		    	        	  sC.showSheduleControls();
-		    	        	  //shiftData = sC.getShiftData(); 	// shiftData is passed by reference	    	        	  
+		    	        	  sC.showEmployeeList();		        			  
+		    	        	  		    	        	  	    	        	  
 		    	        	  scheduleTableView.refresh();	    	        	  
 		        		  }
 		        	  }

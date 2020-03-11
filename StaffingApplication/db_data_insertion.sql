@@ -63,129 +63,154 @@ VALUES ('M3', '230000', '070000', 'M');
 
 -- employees table dummy data:
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Dan', 'Collins', 'dan.collins@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Dan', 'Collins', 'Portering Services', 'dan.collins@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Joe', 'Silver', 'joe.silver@company.com', 
-	1000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Joe', 'Silver', 'Portering Services', 'joe.silver@company.com', 
+	1000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Stacy', 'Klein', 'stacy.klein@company.com', 
-	1000, TRUE, FALSE, FALSE, FALSE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Stacy', 'Klein', 'Portering Services', 'stacy.klein@company.com', 
+	1000, 0, TRUE, FALSE, FALSE, FALSE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Jennifer', 'Gold', 'jennifer.gold@company.com', 
-	25000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Jennifer', 'Gold', 'Portering Services', 'jennifer.gold@company.com', 
+	25000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Moe', 'Cedar', 'moe.cedar@company.com', 
-	4500, TRUE, FALSE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Moe', 'Cedar', 'Portering Services', 'moe.cedar@company.com', 
+	4500, 0, TRUE, FALSE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Amber', 'Nickel', 'amber.nickel@company.com',
-	15000, FALSE, FALSE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Amber', 'Nickel', 'Portering Services', 'amber.nickel@company.com',
+	15000, 0, FALSE, FALSE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Carl', 'Stevens', 'carl.stevens@company.com', 
-	25000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Carl', 'Stevens', 'Portering Services', 'carl.stevens@company.com', 
+	25000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Ronald', 'Jones', 'ronald.jones@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Ronald', 'Jones', 'Portering Services', 'ronald.jones@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Mick', 'Dagger', 'mick.dagger@company.com', 
-	35000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Mick', 'Dagger', 'Portering Services', 'mick.dagger@company.com', 
+	35000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Auryn', 'James', 'auryn.james@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Auryn', 'James', 'Portering Services', 'auryn.james@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Don', 'Curtains', 'don.curtains@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Don', 'Curtains', 'Portering Services', 'don.curtains@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Madeline', 'Mombay', 'madeline.mombay@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Madeline', 'Mombay', 'Portering Services', 'madeline.mombay@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 	
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Michael', 'Sleeman', 'michael.sleeman@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Michael', 'Sleeman', 'Portering Services', 'michael.sleeman@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('John', 'Conway', 'john.conway@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('John', 'Conway', 'Portering Services', 'john.conway@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 	
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Liam', 'Kincaid', 'liam.kincaid@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Liam', 'Kincaid', 'Portering Services', 'liam.kincaid@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Lemmy', 'Rockolo', 'lemmy.rockolo@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Lemmy', 'Rockolo', 'Portering Services', 'lemmy.rockolo@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Kimberly', 'Cline', 'kimberly.cline@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Kimberly', 'Cline', 'Portering Services', 'kimberly.cline@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Ashley', 'Melee', 'ashley.melee@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Ashley', 'Melee', 'Portering Services', 'ashley.melee@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Sarah', 'Cool', 'sarah.cool@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Sarah', 'Cool', 'Portering Services', 'sarah.cool@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
--- additional employees below
-
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Shawn', 'Trip', 'shawn.tripp@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Shawn', 'Trip',  'Portering Services','shawn.tripp@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 	
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Lauren', 'Sloan', 'lauren.sloan@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Lauren', 'Sloan', 'Portering Services', 'lauren.sloan@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Andrea', 'Walton', 'andrea.walton@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Andrea', 'Walton', 'Portering Services', 'andrea.walton@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Kate', 'Peters', 'kate.peters@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Kate', 'Peters', 'Portering Services', 'kate.peters@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Jennifer', 'Mallo', 'jennifer.mallo@company.com', 
-	65000, TRUE, TRUE, FALSE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Jennifer', 'Mallo', 'Portering Services', 'jennifer.mallo@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
 
-INSERT INTO employees(first_name, last_name, email, 
-	hours_worked, pool, mdr, linen, dock)
-VALUES('Amelia', 'Reynolds', 'amelia.renolds@company.com', 
-	15000, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Amelia', 'Reynolds', 'Portering Services', 'amelia.renolds@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
+	
+-- new batch
+
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Tony', 'Subtle', 'Portering Services', 'tony.stark@company.com', 
+	35000, 0, TRUE, TRUE, TRUE, TRUE);
+
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Charles', 'Excalibur', 'Portering Services', 'charles.xavier@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
+
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Johnathan', 'Thomas', 'Portering Services', 'johnathan.thomas@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);
+
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Gregory', 'Bite', 'Portering Services', 'gregory.peck@company.com', 
+	65000, 0, TRUE, TRUE, FALSE, TRUE);
+
+INSERT INTO employees(first_name, last_name, department, email, 
+	hours_worked, sick_days, pool, mdr, linen, dock)
+VALUES('Stewart', 'Large', 'Portering Services', 'stewart.large@company.com', 
+	15000, 0, TRUE, TRUE, TRUE, TRUE);

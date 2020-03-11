@@ -48,6 +48,10 @@ public class Employee{
 		this.dock = dk;
 	}
 	
+	public Employee() {
+		
+	}
+	
 	// get methods
 	public int getEmployeeID() {
 		return this.employeeID;

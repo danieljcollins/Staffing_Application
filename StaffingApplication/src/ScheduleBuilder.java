@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.time.LocalTime;
+import java.time.LocalDate;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,9 +23,7 @@ public class ScheduleBuilder{
 	// let's start by bringing in the shift and employee objects that were derived from the database calls
 	public ScheduleBuilder(ObservableList<Shift> sObjects, ObservableList<Employee> eObjects){
 		this.shifts = sObjects;
-		this.employees = eObjects;
-				
-		buildSchedule();
+		this.employees = eObjects;		
 	} // ends constructor
 	
 	// this will take the employee data and shift data, apply "business rules" to each employee to determine
@@ -165,5 +164,26 @@ public class ScheduleBuilder{
 		}
 		//System.out.println("Employee " + e.getFirstName() + " is not trained for the shift and is ineligible");
 		return false;
+	}
+	
+	// the purpose of this method is to check the employee list for available employees to fill an empty shift manually
+	// this is done if the auto-scheduler doesn't fill a shift, or an employee is sick and thus a shift has become unexpectedly unfilled
+	public ObservableList<Employee> getAvailableEmployees(Shift shiftToFill, int dayNum){	//LocalDate dateOfShift){
+		ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();				
+		
+		for(int j = 0; j < employees.size(); j++) {		
+			if(trainingCheck(employees.get(j), shiftToFill) && notScheduled(dayNum, shiftToFill, employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j))) {						
+				//fillShift(dayNumber, shifts.get(i), employees.get(j));
+				//pseudo code
+				// add employee to the list that will be returned
+				availableEmployees.add(employees.get(j));
+				System.out.println("Available employee found: + " + employees.get(j).firstName + " " + employees.get(j).lastName );
+			}
+			//else {
+				//System.out.println("This employee has already been scheduled.");
+			//}														
+		}		
+		
+		return availableEmployees;
 	}
 }

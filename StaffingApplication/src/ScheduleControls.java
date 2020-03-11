@@ -66,9 +66,15 @@ public class ScheduleControls{
 	ChoiceBox redeployCB;
 	
 	ObservableList<Shift> shiftData;
-	Shift shiftSelected;	
+	Shift shiftSelected;
 	
-	public ScheduleControls(String fName, String lName, Employee emp, TableView empTableView, TableView schTableView, String dayString, int dayNum, ObservableList<Shift> shData, Shift shiftSel) {
+	ObservableList<Employee> availableEmployeeData;
+	ObservableList<Employee> employeeData;
+	
+	// these two components will display available employees that can fill empty shifts
+	TableView availableEmployeeTable = new TableView<Employee>();	
+	
+	public ScheduleControls(String fName, String lName, Employee emp, TableView empTableView, TableView schTableView, String dayString, int dayNum, ObservableList<Shift> shData, Shift shiftSel, ObservableList<Employee> empData) {
 		this.firstName = fName;
 		this.lastName = lName;
 		this.employee = emp;
@@ -78,7 +84,8 @@ public class ScheduleControls{
 		this.dayNumber = dayNum;
 		this.shiftData = shData;
 		this.shiftSelected = shiftSel;
-		System.out.println("Shift Selected sent to Schedule Controls: " + shiftSelected.shiftID);
+		this.employeeData = empData;
+		//System.out.println("Shift Selected sent to Schedule Controls: " + shiftSelected.shiftID);		
 	}
 	
 	public ObservableList<Shift> getShiftData(){
@@ -123,6 +130,20 @@ public class ScheduleControls{
 		extendShiftTF = new TextField("1");
 		extendShiftTF.setMinWidth(25);
 		
+		// set up Table of employees that are available to fill empty shifts
+		Label availableEmployeeTableLabel = new Label("Available Employees");		
+		availableEmployeeTable = new TableView<Employee>(availableEmployeeData);		
+		availableEmployeeTable.setMaxHeight(200);
+		TableColumn employeeFirstNameCol = new TableColumn("First Name");
+		TableColumn employeeLastNameCol = new TableColumn("Last Name");		
+		
+		employeeFirstNameCol.setMinWidth(100);
+		employeeFirstNameCol.setCellValueFactory(new PropertyValueFactory<Employee, String>("firstName"));
+		employeeLastNameCol.setMinWidth(100);
+		employeeLastNameCol.setCellValueFactory(new PropertyValueFactory<Employee, String>("lastName"));
+		availableEmployeeTable.getColumns().addAll(employeeFirstNameCol, employeeLastNameCol);
+		availableEmployeeTable.setVisible(false);
+				
 		gridPane.add(dateLabel, 0, 0);
 		gridPane.add(dateLabelData, 1, 0);
 		
@@ -140,6 +161,9 @@ public class ScheduleControls{
 		
 		gridPane.add(extendShiftButton, 0, 5);
 		gridPane.add(extendShiftTF, 1, 5);
+		
+		gridPane.add(availableEmployeeTableLabel, 0, 6);
+		gridPane.add(availableEmployeeTable, 0, 7);
 				 
         stage.setScene(scene);
         stage.show();
@@ -202,6 +226,42 @@ public class ScheduleControls{
 					} // ends for shift = 0 loop				
 				}				
 			}
-		}));	// ends redeployButton.setOnAction()		
-	}	
+		}));	// ends redeployButton.setOnAction()
+		
+		// this event handler will allow the user to click on availableEmployeeTable, select an employee from the list which will then populate that employee name
+		// in UserInterface.java's scheduleTableView in the Schedule tab
+		EventHandler<javafx.scene.input.MouseEvent> eventHandler = new EventHandler<javafx.scene.input.MouseEvent>() {
+			@Override
+		    public void handle(javafx.scene.input.MouseEvent e) {
+				availableEmployeeTable.getSelectionModel().setCellSelectionEnabled(true);
+		        if(e.getClickCount() == 2) {
+		        	Employee employeeSelected = (Employee)availableEmployeeTable.getSelectionModel().getSelectedItem(); // the name of the column that was selected
+					System.out.println("Employee Selected: " + employeeSelected.getEmployeeName());	
+									   
+					Shift shift1 = shiftData.get(shiftSelected.shiftID);
+					int shift1Index = shiftData.get(shiftSelected.shiftID).shiftID;
+									
+					// find the matching shift between the selected shift (when they entered ScheduleControls.java) and an actual Shift object
+					// and then swap the employee names on the schedule (shiftData object)							
+					for(int shift = 0; shift < shiftData.size(); shift++) {
+						if(shiftData.get(shift).shiftName.equals( shiftSelected.shiftName ) && shiftData.get(shift).date.equals(shiftSelected.date) ) {
+							shiftData.get(shift1Index).setEmployeeName(dayNumber, employeeSelected.getEmployeeName());
+											
+							scheduleTableView.refresh();
+							stage.close();
+						}
+					} // ends for shift = 0 loop
+				}
+			}
+		};	// ends eventHandler for clicking on availableEmployeeTable
+		availableEmployeeTable.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, eventHandler);        //Adding the event handler
+	} // ends userEvents()
+	
+	public void setAvailableEmployees(ObservableList<Employee> availEmp) {
+		this.availableEmployeeData = availEmp;
+	}
+	
+	public void showEmployeeList() {
+		availableEmployeeTable.setVisible(true);
+	}
 } // ends class
