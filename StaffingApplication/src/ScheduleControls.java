@@ -35,7 +35,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+//import javafx.util.Callback;
 
 
 // The purpose of this class is to open a small window that allows the user to view and change aspects of the employee
@@ -65,6 +65,8 @@ public class ScheduleControls{
 	Button redeployButton;
 	ChoiceBox redeployCB;
 	
+	Button unassignShiftButton;	
+	
 	ObservableList<Shift> shiftData;
 	Shift shiftSelected;
 	
@@ -84,8 +86,7 @@ public class ScheduleControls{
 		this.dayNumber = dayNum;
 		this.shiftData = shData;
 		this.shiftSelected = shiftSel;
-		this.employeeData = empData;
-		//System.out.println("Shift Selected sent to Schedule Controls: " + shiftSelected.shiftID);		
+		this.employeeData = empData;				
 	}
 	
 	public ObservableList<Shift> getShiftData(){
@@ -130,8 +131,12 @@ public class ScheduleControls{
 		extendShiftTF = new TextField("1");
 		extendShiftTF.setMinWidth(25);
 		
+		unassignShiftButton = new Button("Unassign Shift");		
+		
 		// set up Table of employees that are available to fill empty shifts
-		Label availableEmployeeTableLabel = new Label("Available Employees");		
+		Label availableEmployeeTableLabel = new Label("Available Employees");
+		availableEmployeeTableLabel.setPadding(new Insets(25, 25, 5, 25));
+		availableEmployeeTableLabel.setFont(new Font("Default", 24));
 		availableEmployeeTable = new TableView<Employee>(availableEmployeeData);		
 		availableEmployeeTable.setMaxHeight(200);
 		TableColumn employeeFirstNameCol = new TableColumn("First Name");
@@ -162,8 +167,10 @@ public class ScheduleControls{
 		gridPane.add(extendShiftButton, 0, 5);
 		gridPane.add(extendShiftTF, 1, 5);
 		
-		gridPane.add(availableEmployeeTableLabel, 0, 6);
-		gridPane.add(availableEmployeeTable, 0, 7);
+		gridPane.add(unassignShiftButton, 0, 6);
+				
+		gridPane.add(availableEmployeeTableLabel, 0, 7);
+		gridPane.add(availableEmployeeTable, 0, 8);
 				 
         stage.setScene(scene);
         stage.show();
@@ -171,25 +178,23 @@ public class ScheduleControls{
         userEvents();
 	}
 	
+	// This method sets up the various user interface component listeners to reduce code clutter in the constructor method
 	public void userEvents() {
-		// this will add sick day(s) to the selected employee
+		// this will add sick day(s) to the selected employee and set their current status to sick so they can't be auto-scheduled until their status is set back to not sick
 		sickDayButton.setOnMouseClicked((new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent e) {				
-				employee.addSickDays(Integer.parseInt( sickDayTF.getText()) );	// add user input error checking code later				
+				employee.addSickDays(Integer.parseInt( sickDayTF.getText()) );	// add user input error checking code later
+				employee.setSickStatus(true);
 				employeeTableView.refresh();
 				
 				// remove employee name from schedule
 				shiftData.get(shiftSelected.shiftID).setEmployeeName(dayNumber, "");
 				scheduleTableView.refresh();
 				
+				
 				stage.close();
 			}
 		}));
-		
-		// this sets up the shift redeployment ChoiceBox
-		// This listened isn't necessary, I can remove this
-		//ChangeListener redeployCBListener = new RedeployChoiceBoxEventListener();	// REMOVE
-		//redeployCB.getSelectionModel().selectedItemProperty().addListener(redeployCBListener); //REMOVE
 		
 		// this takes the redeploy choiceBox selection and assigns the selected shift(ChoiceBox) to the selected 
 		// employee (Schedule tab). If there's an employee assigned to the selected shift, it will switch.
@@ -221,6 +226,7 @@ public class ScheduleControls{
 							shiftData.get(shift1Index).setEmployeeName(dayNumber, tempName);
 							
 							scheduleTableView.refresh();
+							
 							stage.close();
 						}
 					} // ends for shift = 0 loop				
@@ -228,17 +234,41 @@ public class ScheduleControls{
 			}
 		}));	// ends redeployButton.setOnAction()
 		
+		// this will unassign an employee from their assigned shift and return them to the available employee pool
+		unassignShiftButton.setOnAction((new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+				Shift shift1 = shiftData.get(shiftSelected.shiftID);
+				int shift1Index = shiftData.get(shiftSelected.shiftID).shiftID;
+								
+				// find the matching shift between the selected shift (when they entered ScheduleControls.java) and an actual Shift object
+				// and then swap the employee names on the schedule (shiftData object)							
+				for(int shift = 0; shift < shiftData.size(); shift++) {
+					if(shiftData.get(shift).shiftName.equals( shiftSelected.shiftName ) && shiftData.get(shift).date.equals(shiftSelected.date) ) {
+						shiftData.get(shift1Index).setEmployeeName(dayNumber, "");	// clear the schedule of the employee name to make way for a new employee to be assigned later						
+						// revert the changes made when the employee was scheduled						
+						employee.hoursWorkedThisPayPeriod -= 8;
+						employee.hoursWorkedTotal -= 8;
+						employee.daysConsecutivelyWorked -= 1;	// design bug: note, when a shift is unassigned it currently breaks the 5 day consecutive work logic. keep this in mind so that it can be redesigned later (see: TODOLIST.txt)
+										
+						scheduleTableView.refresh();
+						
+						stage.close();
+					}
+				} // ends for shift = 0 loop
+			}
+		}));	// ends unassignButton.setOnAction()
+		
 		// this event handler will allow the user to click on availableEmployeeTable, select an employee from the list which will then populate that employee name
 		// in UserInterface.java's scheduleTableView in the Schedule tab
-		EventHandler<javafx.scene.input.MouseEvent> eventHandler = new EventHandler<javafx.scene.input.MouseEvent>() {
+		EventHandler<javafx.scene.input.MouseEvent> availableEmployeeTableEventHandler = new EventHandler<javafx.scene.input.MouseEvent>() {
 			@Override
 		    public void handle(javafx.scene.input.MouseEvent e) {
 				availableEmployeeTable.getSelectionModel().setCellSelectionEnabled(true);
 		        if(e.getClickCount() == 2) {
 		        	Employee employeeSelected = (Employee)availableEmployeeTable.getSelectionModel().getSelectedItem(); // the name of the column that was selected
-					System.out.println("Employee Selected: " + employeeSelected.getEmployeeName());	
+					//System.out.println("Employee Selected: " + employeeSelected.getEmployeeName());	
 									   
-					Shift shift1 = shiftData.get(shiftSelected.shiftID);
+					//Shift shift1 = shiftData.get(shiftSelected.shiftID);
 					int shift1Index = shiftData.get(shiftSelected.shiftID).shiftID;
 									
 					// find the matching shift between the selected shift (when they entered ScheduleControls.java) and an actual Shift object
@@ -248,13 +278,15 @@ public class ScheduleControls{
 							shiftData.get(shift1Index).setEmployeeName(dayNumber, employeeSelected.getEmployeeName());
 											
 							scheduleTableView.refresh();
+							
 							stage.close();
 						}
 					} // ends for shift = 0 loop
 				}
 			}
-		};	// ends eventHandler for clicking on availableEmployeeTable
-		availableEmployeeTable.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, eventHandler);        //Adding the event handler
+		};	// ends eventHandler() for clicking on availableEmployeeTable
+		availableEmployeeTable.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, availableEmployeeTableEventHandler);        //Adding the event handler for mouse clicks
+		
 	} // ends userEvents()
 	
 	public void setAvailableEmployees(ObservableList<Employee> availEmp) {

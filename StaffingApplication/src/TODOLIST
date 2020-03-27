@@ -1,32 +1,38 @@
 COMPLETED: Allow for user to switch two employees shifts, through "redeploy" button. Possibly implement a view of what shift is currently scheduled through a label, then the ChoiceBox selection of what shift to switch with, followed by a confirmation question either through a small custom window or dialog that confirms the choice. Then ensure that the changes are reflected in the schedule itself.
-BUG(COMPLETED, to watch out for): Schedule tab data doesn't always update visually after re-deploying an employee.
 COMPLETED: Assign empty shift from employee list (if auto-scheduler doesn't assign a shift, and/or someone is sick)
 COMPLETED: Add clickable employee name from ScheduleTools.java availableEmployeeTable to fill an empty shift.
-NEXT STEP: Add "Shift Unassign" button to ScheduleTools.java which will remove the employee from that shift without penalty
+COMPLETED: Add "Shift Unassign" button to ScheduleTools.java which will remove the employee from that shift without penalty
+COMPLETED: When indicating an employee is sick or unassigned, the Available Employees table feature should update whether the employee is now available(after being re-assigned) or unavailable(if sick)
+COMPLETED: Implement concrete date feature in schedule tab via drop down menus which select the start date and end date of a pay period
+COMPLETED: When coding an employee as sick, they will appear in the available employees auto-generated table. Add a field to the Employee class which indicates that they currently coded as sick and add a button to remove their sick status. This should be a double-click on the employee name on the Employee tab of UserInterface.java
+COMPLETED: Refresh the Employee tab of ScheduleBuilder.java after changing training in EmployeeControls.java
+
+COMPLETED: Add click-able employee names in schedule tab, allow user to interact with each employee. Such as, coding the employee as sick, which would save the sick day to the Employee object, and/or save it to the database.
+COMPLETED: When sick, I need to remove employee name from shift 
+COMPLETED: Show a list of available employees to cover that shift. Possibly bringing up the employee names and phone numbers for the staffing employee to then call and request that they come into work to cover that shift
+
+COMPLETED: Add click-able employee names in the Employee tab; 
+COMPLETED: From Employee tab, open up a new window or tab that shows information on that employee. 
+OPTIONAL: possibly the payroll information for that pay period, or year-to-date etc.
+OPTIONAL: Implement payroll tab, which calculate each employees income based on their hours worked. Based on expanded schedules, have year to date features for their hours worked, income etc.
+OPTIONAL: possibly a employee specific schedule that only includes their schedule information and not the entire list of shifts
+
+UNADDRESSED: Add an auto-increment of sick days if the employee is still sick and hasn't called to confirm that they are coming back to work
+IN PROGRESS: Be able to assign vacation time to an employee, and add a method to ScheduleBuilder.java which checks if the employee is sick and if they are currently on vacation or some type of leave of absence.
+IN PROGRESS: Be able to view vacation days as a list of days, and cancel particular days in that list. This will be a seperate window from EmployeeControls.java but will be accessed from that window.
 
 UNADDRESSED: Shift Switching: Allow user to select an employee (and a shift) on Schedule tab. From ScheduleControls.java the select Switch Shift. Then select a second Employee/Shift from Schedule tab of UserInterface.java. Then the change should be reflected in the shifts ObservableList and so fourth.
+ALTERNATE COMPLETE: User can unassign a shift on both days, and assign the shifts to effectively "switch" the shifts assigned.
 
 UNADDRESSED: In Schedule Tools tab of UserInterface.java, add an "Import Schedule" feature. User would import an already created schedule from some source, such as a text file, XML, etc. And then it would load that data into the Schedule tab of UserInterface.java for manipulation/viewing.
-
-COMPLETED: Implement concrete date feature in schedule tab via drop down menus which select the start date and end date of a pay period
-
 UNADDRESSED: Save the created schedules back to the database for archiving. From there, be accessible to bring-up old schedules in the application
+
 UNADDRESSED: Allow for changes to be made to the database from the application. Shift, Employee and Schedule data specifically which will be saved to the database (ie. adding and removing employees, shifts, changes to shifts etc.)
 
 UNADDRESSED: Add exporting features, such as exporting schedule data to .pdf or xml, json, or text for usage in other applications.
 - exporting to be viewable by other employees (to see when they have to work)
 - exporting payroll data, for usage with their payroll application
 - exporting employee data, for usage with human resources purposes
-
-COMPLETED: Add click-able employee names in schedule tab, allow user to interact with each employee. Such as, coding the employee as sick, which would save the sick day to the Employee object, and/or save it to the database.
-COMPLETED: - when sick, I need to remove employee name from shift 
-And even better, ideally show a list of available employees to cover that shift. Possibly bringing up the employee names and phone numbers for the staffing employee to then call and request that they come into work to cover that shift
-
-COMPLETED: Add click-able employee names in the Employee tab; 
-COMPLETED: from there, open up a new window or tab that shows information on that employee. 
-OPTIONAL: possibly the payroll information for that pay period, or year-to-date etc.
-OPTIONAL: Implement payroll tab, which calculate each employees income based on their hours worked. Based on expanded schedules, have year to date features for their hours worked, income etc.
-OPTIONAL: possibly a employee specific schedule that only includes their schedule information and not the entire list of shifts
 
 UNADDRESSED: User login screen
 - upon application start, a user login screen appears. Only approved employees (ie staffing employees) can access the application
@@ -36,4 +42,10 @@ UNADDRESSED: User login screen
 UNADDRESSED: Transaction History Feature:
 - when a user changes the schedule, adds sick days, or switches employees, it saves the user name who made the change, what was changed and the date for accountability reasons
 
+BUGS (or application design flaws):
+- When a shift is unassigned, it reduces the consecutive days worked variable in Employee.java by 1. When this is performed, it is unknown to the application whether the employee will be rescheduled elsewhere that day (so decrement by 1 and leave it) or whether they are being unassigned for a switch to be performed soon after in which case, the days consecutively worked should be changed to zero.
+- UserInterface.java: When clicking a non-employee name in Employee tab, the program crashes, and when clicking a non-employee name in Schedule tab it crashes. Add handling for those clicks.
+
+BUGS (COMPLETED):
+Continue to monitor: Schedule tab data doesn't always update visually after re-deploying an employee.
  

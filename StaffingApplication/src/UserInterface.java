@@ -1,4 +1,5 @@
 import javafx.application.Application;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -35,11 +36,7 @@ import javafx.scene.text.Font;
 
 import javafx.stage.Stage;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-
 import java.util.*;
-import javafx.util.Callback;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -145,7 +142,11 @@ public class UserInterface extends Application{
         TableColumn employeeHoursTotalCol = new TableColumn("Seniority(Hours)");
         employeeHoursTotalCol.setMinWidth(150);
         employeeHoursTotalCol.setCellValueFactory(new PropertyValueFactory<Employee, String>("hoursWorkedTotal"));
-        
+
+        TableColumn employeeCurrentlySickCol = new TableColumn("Currently Sick?");
+        employeeCurrentlySickCol.setMinWidth((150));
+        employeeCurrentlySickCol.setCellValueFactory(new PropertyValueFactory<Employee, Integer>("SickStatus"));
+
         TableColumn employeeSickDaysCol = new TableColumn("Sick Days");
         employeeSickDaysCol.setMinWidth((150));
         employeeSickDaysCol.setCellValueFactory(new PropertyValueFactory<Employee, Integer>("sickDays"));
@@ -156,22 +157,22 @@ public class UserInterface extends Application{
         
         TableColumn employeePoolTrainingCol = new TableColumn("Pool Training");
         employeePoolTrainingCol.setMinWidth(150);
-        employeePoolTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("pool"));
+        employeePoolTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("TrainingPool"));
         
         TableColumn employeeLinenTrainingCol = new TableColumn("Linen Training");
         employeeLinenTrainingCol.setMinWidth(150);
-        employeeLinenTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("linen"));
+        employeeLinenTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("TrainingLinen"));
         
         TableColumn employeeMDRTrainingCol = new TableColumn("MDR Training");
         employeeMDRTrainingCol.setMinWidth(150);
-        employeeMDRTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("mdr"));
+        employeeMDRTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("TrainingMdr"));
         
         TableColumn employeeDockTrainingCol = new TableColumn("Dock Training");
         employeeDockTrainingCol.setMinWidth(150);
-        employeeDockTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("dock"));
+        employeeDockTrainingCol.setCellValueFactory(new PropertyValueFactory<Employee, Boolean>("TrainingDock"));
          
         employeeTableView.setItems(employeeData);
-        employeeTableView.getColumns().addAll(employeeIDCol, employeeFirstNameCol, employeeLastNameCol, employeeHoursTotalCol, employeeEmailCol, employeeSickDaysCol, employeePoolTrainingCol, employeeLinenTrainingCol, employeeMDRTrainingCol, employeeDockTrainingCol);        
+        employeeTableView.getColumns().addAll(employeeIDCol, employeeFirstNameCol, employeeLastNameCol, employeeHoursTotalCol, employeeEmailCol, employeeCurrentlySickCol, employeeSickDaysCol, employeePoolTrainingCol, employeeLinenTrainingCol, employeeMDRTrainingCol, employeeDockTrainingCol);        
         
         // create a tab for employee table        
         employeeTab = new Tab();
@@ -316,6 +317,7 @@ public class UserInterface extends Application{
         stage.show();
         
         handleEvents();	// run an initialization method to set up mouse events etc.
+        handleEmployeeControls();
         handleScheduleControls();
     } // ends start()
 	
@@ -349,8 +351,44 @@ public class UserInterface extends Application{
         		// enable the Schedule tab now that the dates have been set
         		scheduleTab.setDisable(false);
         	}        	
-        }));        
-	} // ends handleEvents()
+        }));
+        
+        // this will call GeneratePDF.java and export the schedule into a .pdf file for viewing/sharing
+        // this will be expanded upon soon
+        exportToPDFButton.setOnMouseClicked((new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent e) {
+				GeneratePDF genPDF = new GeneratePDF();
+				genPDF.generateSchedule();				
+			}
+        }));
+        
+    } // ends handleEvents()
+	
+	// from the Employee tab of UserInterface.java the user can double-click on an employee name to bring up employee-specific controls
+	// that are implemented in EmployeeControls.java
+	// at this time, vacation booking and updating their training is planned but more features could be added later
+	public void handleEmployeeControls() {
+		EventHandler<javafx.scene.input.MouseEvent> employeeTableEventHandler = new EventHandler<javafx.scene.input.MouseEvent>() {
+			public void handle(javafx.scene.input.MouseEvent e) {
+				employeeTableView.getSelectionModel().setCellSelectionEnabled(true);
+				if(e.getClickCount() == 2) {					
+					
+					int empId = employeeTableView.getSelectionModel().getSelectedCells().get(0).getRow();					
+					
+					//System.out.println("Employee selected: " + employeeData.get(empId).getEmployeeName());
+					
+					// determine which Employee object that is being sent in based on the name in the cell
+					for(int i = 0; i < employeeData.size(); i++){
+						if(employeeData.get(i).getEmployeeID() == empId) {
+							Employee emp = employeeData.get(i);EmployeeControls eC = new EmployeeControls(empId, employeeData, employeeTableView);
+							eC.showEmployeeControls();	// open the window of EmployeeControls.java
+						}
+					}
+				}
+			}
+		};		
+		employeeTableView.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, employeeTableEventHandler);        //Adding the event handler
+	} // ends handleEmployeeControls()	
 	
 	public void handleScheduleControls(){
 		// Creating the mouse event handler for clicking cells in scheduleTable
@@ -358,11 +396,11 @@ public class UserInterface extends Application{
 		// and then interact with that in various business ways. one example being to allow a user to
 		// indicate that the assigned employee is sick and will be unable to work that day
 		// another example would be to swap two employees's shifts for that day
-        EventHandler<javafx.scene.input.MouseEvent> eventHandler = 
+        EventHandler<javafx.scene.input.MouseEvent> scheduleTableEventHandler = 
            new EventHandler<javafx.scene.input.MouseEvent>() { 
            
            @Override 
-           public void handle(javafx.scene.input.MouseEvent e) {
+           public void handle(javafx.scene.input.MouseEvent e){
               scheduleTableView.getSelectionModel().setCellSelectionEnabled(true);
               if(e.getClickCount() == 2) {
             	  
@@ -381,6 +419,7 @@ public class UserInterface extends Application{
 	        		  //send employee to ScheduleBuilder.java to get a list of available employees
 	        		  ScheduleBuilder sb = new ScheduleBuilder(shiftData, employeeData);
 	        		  ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();
+	        		  availableEmployees.clear(); // clear the data so that when the user changes things in other parts of the application the events here can re-generate an updated list based on the changed data, such as if an employee is set to being currently sick
 	        		  availableEmployees = sb.getAvailableEmployees(shiftSelected, dayNumber);
 	        		  
 	        		  // send the returned list to ScheduleControl to display that list to the user for their selection
@@ -388,7 +427,7 @@ public class UserInterface extends Application{
 	        		  ScheduleControls sC = new ScheduleControls( "Unassigned", "", emptyEmployee, employeeTableView, scheduleTableView, dateSelected, dayNumber, shiftData, shiftSelected, employeeData );
 	        		  sC.setAvailableEmployees(availableEmployees);
     	        	  sC.showSheduleControls();
-    	        	  sC.showEmployeeList();
+    	        	  sC.showEmployeeList();    	        	  
 	        	  }
 	        	  else {	// there's an employee in that spot so I'll open ScheduleControls.java, with the Employee info populated there	        	  	        	  
 		        	  int midIndex = empName.indexOf(" ");
@@ -400,6 +439,7 @@ public class UserInterface extends Application{
 		        			//send employee to ScheduleBuilder.java to get a list of available employees
 			        		  ScheduleBuilder sb = new ScheduleBuilder(shiftData, employeeData);
 			        		  ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();
+			        		  availableEmployees.clear(); // clear the data so that when the user changes things in other parts of the application the events here can re-generate an updated list based on the changed data, such as if an employee is set to being currently sick
 			        		  availableEmployees = sb.getAvailableEmployees(shiftSelected, dayNumber);
 			        		  
 			        		  // send the returned list to ScheduleControl to display that list to the user for their selection
@@ -408,14 +448,14 @@ public class UserInterface extends Application{
 		    	        	  sC.showSheduleControls();
 		    	        	  sC.showEmployeeList();		        			  
 		    	        	  		    	        	  	    	        	  
-		    	        	  scheduleTableView.refresh();	    	        	  
+		    	        	  scheduleTableView.refresh();		    	        	  
 		        		  }
 		        	  }
 	        	  }
               }
            } 
         };
-        scheduleTableView.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, eventHandler);        //Adding the event handler      	
+        scheduleTableView.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, scheduleTableEventHandler);        //Adding the event handler      	
 	} // ends handleScheduleControls()
     
     public static void main(String[] args){    	

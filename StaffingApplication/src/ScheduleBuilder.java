@@ -44,7 +44,7 @@ public class ScheduleBuilder{
 			for(int i = 0; i < shifts.size(); i++) {
 				for(int j = 0; j < employees.size(); j++) {					
 					if(shifts.get(i).getIsFilled(dayNumber) == false) {	// if it's not already filled, let's try to fill it
-						if(trainingCheck(employees.get(j), shifts.get(i)) && notScheduled(dayNumber, shifts.get(i), employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j))) {						
+						if(trainingCheck(employees.get(j), shifts.get(i)) && notScheduled(dayNumber, shifts.get(i), employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j)) && sickCheck(employees.get(j)) ) {						
 							fillShift(dayNumber, shifts.get(i), employees.get(j));
 							//break;	// the shift has been filled, so move on to the next shift iteration
 						}
@@ -61,23 +61,16 @@ public class ScheduleBuilder{
 		}
 	} // ends buildSchedule()
 	
-	public void fillShift(int dNum, Shift s, Employee e) {		
+	// this method assigns an employee name to the shift object for a particular day in the pay period
+	public void fillShift(int dNum, Shift s, Employee e) {
 		
 		// scheduling code:
 		shifts.get( s.getShiftID() ).setEmployeeName(dNum, e.getEmployeeName() );
-		shifts.get( s.getShiftID() ).setIsFilled(dNum, true);
-		
-		// employee state display code:		
-		//System.out.println("Hours Worked Var Before: " + employees.get( e.getEmployeeID() ).hoursWorkedThisPayPeriod );
-		//System.out.println("Days Worked Var Before: " + employees.get( e.getEmployeeID() ).daysConsecutivelyWorked );
+		shifts.get( s.getShiftID() ).setIsFilled(dNum, true);		
 		
 		e.hoursWorkedThisPayPeriod += 8;
 		e.hoursWorkedTotal += 8;
 		e.daysConsecutivelyWorked += 1;
-		
-		//System.out.println("Hours Worked Var After: " + employees.get( e.getEmployeeID() ).hoursWorkedThisPayPeriod );		
-		//System.out.println("Days Worked Var After: " + employees.get( e.getEmployeeID() ).daysConsecutivelyWorked );		
-		//System.out.println("Filled Shift Name: " + shifts.get(s.getShiftID()).shiftName + " with: " + employees.get(e.getEmployeeID()).getEmployeeName());		
 	}
 			
 	// new code section: business scheduling rule methods which will filter through shift and employee data to populate shifts
@@ -87,8 +80,7 @@ public class ScheduleBuilder{
 		// by looking into the shifts, it can be determined if the employeeIndex matches an employeeIndex assigned to a shift
 		// if that employee index isn't found, they are therefore a candidate to be scheduled for a shift on that day
 		for(int i = 0; i < shifts.size(); i++) {
-			if( shifts.get(i).getEmployeeName(dNum).equals( e.getEmployeeName() ) ) {
-				//System.out.println("This employee has been scheduled already");
+			if( shifts.get(i).getEmployeeName(dNum).equals( e.getEmployeeName() ) ) {				
 				return false;	// if it's the same, then we found a shift where that employee is already scheduled				
 			}
 			else {
@@ -98,9 +90,21 @@ public class ScheduleBuilder{
 		return true;	// if the loop concluded without finding that the employee is scheduled to a shift, then they are not scheduled
 	}
 	
+	// this will check if the employee is currently sick
+	public boolean sickCheck(Employee emp) {
+		if(emp.getSickStatus() == false) {	// if they are not sick, they have "passed" this check and therefore I'll return true
+			System.out.println("Employee has been checked, and they are not sick");
+			return true;
+		}
+		else {
+			System.out.println(emp.getEmployeeName() + " has been checked, and they are currently sick");
+			return false;
+		}
+	}
+	
 	// will check seniority of employee to ascertain shift assignment order (highest seniority first)
 	// returns employee ID of next highest employee
-	// this is currently unnneccessary since after the employee data is migrated from the database, the data
+	// this is currently unnneccessary since after the employee data is migrated from the dat)abase, the data
 	// is sorted by highest seniority first. therefore the next available employee will have the highest seniority or will be
 	// tied in ranking with the next employee
 	public boolean seniorityCheck(int empIndex){
@@ -138,26 +142,26 @@ public class ScheduleBuilder{
 	public boolean trainingCheck(Employee e, Shift s){
 		if(s.getRequiredTraining().equals("P")) {
 			//System.out.println("This shift being filled requires Pool training");
-			if(e.getPool()) {
+			if(e.getTrainingPool()) {
 				//System.out.println("Employee is trained for Pool shifts and is eligible");
 				return true;				
 			}
 		}
 		else if(s.getRequiredTraining().equals("L")) {
-			if(e.getLinen()) {
+			if(e.getTrainingLinen()) {
 				//System.out.println("Employee is trained for Linen shifts and is eligible");
 				return true;
 				
 			}
 		}
 		else if(s.getRequiredTraining().equals("D")) {
-			if(e.getDock()) {
+			if(e.getTrainingDock()) {
 				//System.out.println("Employee is trained for Dock shifts and is eligible");
 				return true;
 			}
 		}
 		else if(s.getRequiredTraining().equals("M")) {
-			if(e.getMdr()) {
+			if(e.getTrainingMdr()) {
 				//System.out.println("Employee is trained for MDR shifts and is eligible");
 				return true;
 			}
@@ -169,19 +173,17 @@ public class ScheduleBuilder{
 	// the purpose of this method is to check the employee list for available employees to fill an empty shift manually
 	// this is done if the auto-scheduler doesn't fill a shift, or an employee is sick and thus a shift has become unexpectedly unfilled
 	public ObservableList<Employee> getAvailableEmployees(Shift shiftToFill, int dayNum){	//LocalDate dateOfShift){
-		ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();				
+		ObservableList<Employee> availableEmployees = FXCollections.observableArrayList();
+		availableEmployees.clear();
 		
 		for(int j = 0; j < employees.size(); j++) {		
-			if(trainingCheck(employees.get(j), shiftToFill) && notScheduled(dayNum, shiftToFill, employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j))) {						
-				//fillShift(dayNumber, shifts.get(i), employees.get(j));
-				//pseudo code
-				// add employee to the list that will be returned
-				availableEmployees.add(employees.get(j));
-				System.out.println("Available employee found: + " + employees.get(j).firstName + " " + employees.get(j).lastName );
+			if(trainingCheck(employees.get(j), shiftToFill) && notScheduled(dayNum, shiftToFill, employees.get(j)) && overTimeCheck(employees.get(j)) && daysConsecutivelyWorkedCheck(employees.get(j)) && sickCheck(employees.get(j)) ) {				
+				availableEmployees.add(employees.get(j));	// add employee to the list that will be returned
+				//System.out.println("Available employee found: + " + employees.get(j).firstName + " " + employees.get(j).lastName );
 			}
-			//else {
-				//System.out.println("This employee has already been scheduled.");
-			//}														
+			else {
+				//System.out.println(employees.get(j).getEmployeeName() + " is unavailable for some reason and won't be listed." );
+			}
 		}		
 		
 		return availableEmployees;
