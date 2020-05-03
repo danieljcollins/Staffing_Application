@@ -12,14 +12,20 @@ COMPLETED: When sick, I need to remove employee name from shift
 COMPLETED: Show a list of available employees to cover that shift. Possibly bringing up the employee names and phone numbers for the staffing employee to then call and request that they come into work to cover that shift
 
 COMPLETED: Add click-able employee names in the Employee tab; 
-COMPLETED: From Employee tab, open up a new window or tab that shows information on that employee. 
-OPTIONAL: possibly the payroll information for that pay period, or year-to-date etc.
+COMPLETED: From Employee tab, open up a new window or tab that shows information on that employee.
+COMPLETED: Add exporting features, such as exporting schedule data to .pdf or xml, json, or text for usage in other applications.
+
+IN PROGRESS: Be able to assign vacation time to an employee, and add a method to ScheduleBuilder.java which checks if the employee is sick and if they are currently on vacation or some type of leave of absence.
+IN PROGRESS: Be able to view vacation days as a list of days(COMPLETED), and cancel particular days in that list. This will be a seperate window from EmployeeControls.java but will be accessed from that window.
+
 OPTIONAL: Implement payroll tab, which calculate each employees income based on their hours worked. Based on expanded schedules, have year to date features for their hours worked, income etc.
 OPTIONAL: possibly a employee specific schedule that only includes their schedule information and not the entire list of shifts
 
-UNADDRESSED: Add an auto-increment of sick days if the employee is still sick and hasn't called to confirm that they are coming back to work
-IN PROGRESS: Be able to assign vacation time to an employee, and add a method to ScheduleBuilder.java which checks if the employee is sick and if they are currently on vacation or some type of leave of absence.
-IN PROGRESS: Be able to view vacation days as a list of days, and cancel particular days in that list. This will be a seperate window from EmployeeControls.java but will be accessed from that window.
+UNADDRESSED: Export payroll data, for usage with their payroll application
+UNADDRESSED: Export employee data, for usage with human resources purposes
+
+UNADDRESSED: Add an auto-increment of sick days if the employee is still sick and hasn't called to confirm that they are coming back to work (this might entail some sort of persistence, or keeping a log-file that would keep track of things when the application wasn't open and could then update numerous pieces of information upon boot-up)
+UNADDRESSED: Don't generate the schedule automatically (upon application start), let the user change sick/vacation/training status, then when they utilize the Schedule Tools tab they can generate the schedule AFTER just in case they wanted to make changes first.
 
 UNADDRESSED: Shift Switching: Allow user to select an employee (and a shift) on Schedule tab. From ScheduleControls.java the select Switch Shift. Then select a second Employee/Shift from Schedule tab of UserInterface.java. Then the change should be reflected in the shifts ObservableList and so fourth.
 ALTERNATE COMPLETE: User can unassign a shift on both days, and assign the shifts to effectively "switch" the shifts assigned.
@@ -28,11 +34,6 @@ UNADDRESSED: In Schedule Tools tab of UserInterface.java, add an "Import Schedul
 UNADDRESSED: Save the created schedules back to the database for archiving. From there, be accessible to bring-up old schedules in the application
 
 UNADDRESSED: Allow for changes to be made to the database from the application. Shift, Employee and Schedule data specifically which will be saved to the database (ie. adding and removing employees, shifts, changes to shifts etc.)
-
-UNADDRESSED: Add exporting features, such as exporting schedule data to .pdf or xml, json, or text for usage in other applications.
-- exporting to be viewable by other employees (to see when they have to work)
-- exporting payroll data, for usage with their payroll application
-- exporting employee data, for usage with human resources purposes
 
 UNADDRESSED: User login screen
 - upon application start, a user login screen appears. Only approved employees (ie staffing employees) can access the application

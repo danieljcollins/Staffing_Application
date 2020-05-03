@@ -93,11 +93,11 @@ public class ScheduleBuilder{
 	// this will check if the employee is currently sick
 	public boolean sickCheck(Employee emp) {
 		if(emp.getSickStatus() == false) {	// if they are not sick, they have "passed" this check and therefore I'll return true
-			System.out.println("Employee has been checked, and they are not sick");
+			//System.out.println("Employee has been checked, and they are not sick");
 			return true;
 		}
 		else {
-			System.out.println(emp.getEmployeeName() + " has been checked, and they are currently sick");
+			//System.out.println(emp.getEmployeeName() + " has been checked, and they are currently sick");
 			return false;
 		}
 	}

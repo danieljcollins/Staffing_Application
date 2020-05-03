@@ -69,7 +69,11 @@ public class Shift{
 	
 	public int getShiftID() {
 		return this.shiftID;
-	}	
+	}
+	
+	public LocalDate getDate() {
+		return this.date;
+	}
 	
 	public LocalTime getStartTime() {
 		return this.startTime;
@@ -154,6 +158,10 @@ public class Shift{
 	
 	public void setShiftID(int sID) {
 		this.shiftID = sID;
+	}
+	
+	public void setDate(LocalDate d) {
+		this.date = d;
 	}
 	
 	public void setDayNumber(int dNum) {

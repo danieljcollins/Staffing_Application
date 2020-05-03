@@ -91,8 +91,17 @@ public class UserInterface extends Application{
     public void start(Stage stage) {
 		//Scene scene = new Scene(new Group());
         stage.setTitle("Automated Staffing Solution");
-        stage.setWidth(800);
-        stage.setHeight(600);
+        try {
+        	//stage.setFullScreen(true);
+        	stage.setWidth(1600);
+            stage.setHeight(900);
+        }
+        catch(Exception e) {
+        	// if the full screen attempt fails due to being on a platform that doesn't allow that
+        	// make a specific screen size instead
+        	stage.setWidth(1600);
+            stage.setHeight(900);
+        }        
         
         // populate Schedule Tab with shifts assigned to employees based on business logic imposed on each employee's data        
         ScheduleBuilder sb = new ScheduleBuilder(shiftData, employeeData);
@@ -282,16 +291,17 @@ public class UserInterface extends Application{
 		exportToXMLButton = new Button();
 		
 		exportToPDFButton.setText("Export to PDF");
-		saveToDBButton.setText("Save to Database");
-		importFromXMLButton.setText("Import schedule from XML file");
-		exportToXMLButton.setText("Export Schedule to XML file");		
+		//saveToDBButton.setText("Save to Database");
+		//importFromXMLButton.setText("Import schedule from XML file");
+		//exportToXMLButton.setText("Export Schedule to XML file");		
 		
 		VBox scheduleTabVBox = new VBox();
 		scheduleTabVBox.getChildren().add(scheduleTableView);
 		
 		HBox scheduleTabHBox = new HBox();		
 		scheduleTabHBox.setPadding(new Insets(25, 25, 25, 25));
-		scheduleTabHBox.getChildren().addAll(exportToPDFButton, saveToDBButton, importFromXMLButton, exportToXMLButton);
+		//scheduleTabHBox.getChildren().addAll(exportToPDFButton, saveToDBButton, importFromXMLButton, exportToXMLButton);
+		scheduleTabHBox.getChildren().addAll(exportToPDFButton);
 		scheduleTabVBox.getChildren().add(scheduleTabHBox);	// add the HBox to the VBox
 		
 		scheduleTab.setContent(scheduleTabVBox);		
@@ -331,6 +341,7 @@ public class UserInterface extends Application{
         generateScheduleButton.setOnMouseClicked((new EventHandler<MouseEvent>() {
         	public void handle(MouseEvent event) {
         		LocalDate selectedDate = datePicker.getValue();	// get the user selected date so that it can be used to appropriately label the columns
+        		shiftData.get(0).setDate(selectedDate);
         		
         		// since a 14 day pay-period is contiguous I can infer the subsequent dates and their labels from the user selected date
         		employeeNameDay1Col.setText(selectedDate.toString());
@@ -358,7 +369,9 @@ public class UserInterface extends Application{
         exportToPDFButton.setOnMouseClicked((new EventHandler<MouseEvent>(){
 			public void handle(MouseEvent e) {
 				GeneratePDF genPDF = new GeneratePDF();
-				genPDF.generateSchedule();				
+				genPDF.sendData(employeeData, shiftData);
+				genPDF.preparePages();
+				genPDF.generateSchedule();
 			}
         }));
         
@@ -380,7 +393,8 @@ public class UserInterface extends Application{
 					// determine which Employee object that is being sent in based on the name in the cell
 					for(int i = 0; i < employeeData.size(); i++){
 						if(employeeData.get(i).getEmployeeID() == empId) {
-							Employee emp = employeeData.get(i);EmployeeControls eC = new EmployeeControls(empId, employeeData, employeeTableView);
+							Employee emp = employeeData.get(i);
+							EmployeeControls eC = new EmployeeControls(empId, employeeData, employeeTableView);
 							eC.showEmployeeControls();	// open the window of EmployeeControls.java
 						}
 					}

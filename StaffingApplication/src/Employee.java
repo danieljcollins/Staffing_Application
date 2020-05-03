@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class Employee{
 	Integer employeeID;
 	String firstName;
@@ -27,7 +30,7 @@ public class Employee{
 	
 	ArrayList<LocalDate> sickDates = new ArrayList<LocalDate>();	// for every sick day, the date of the sick day will be added
 	
-	ArrayList<LocalDate> vacationBooked = new ArrayList<LocalDate>();	// for every day of every vacation, a new date will be added for that vacation day
+	ObservableList<Vacation> vacationBooked = FXCollections.observableArrayList();	// for every day of every vacation, a new date will be added for that vacation day
 			
 	// indicates whether the employee is trained to perform a certain type of work
 	Boolean pool;
@@ -124,8 +127,8 @@ public class Employee{
 		return this.dock;
 	}
 	
-	public ArrayList<LocalDate> getVacationDates(){
-		return this.vacationBooked;
+	public ObservableList<Vacation> getVacationDateList(){
+		return vacationBooked;
 	}	
 	
 	// set methods
@@ -168,13 +171,13 @@ public class Employee{
 	// the easiest way to accomplish this is to add all vacation dates day by date for easy comparison to the current day when building schedules (which are built day by day in this application)
 	public void addVacation(LocalDate start, LocalDate end) {		
 		int numberOfDays = end.compareTo(start);	// determine the number of days between start and end dates
-		for(int i = 0; i <= numberOfDays; i++) {
-			this.vacationBooked.add(start.plusDays(i));		// add each LocalDate to this.vacationBooked
+		for(int i = 0; i <= numberOfDays; i++) {			
+			this.vacationBooked.add( new Vacation(start.plusDays(i)) );		// add each LocalDate to this.vacationBooked
 		}
-	}
+	}	
 	
 	// this method will check if the employee is currently on a booked vacation
-	public boolean checkVacationStatus(Employee emp, LocalDate date) {
+	public boolean checkVacationStatus(LocalDate date) {
 		//pseudo code: check if they are assigned vacation in the emp object for the date that is currently being scheduled		
 		return true;	// they are not on vacation
 	}

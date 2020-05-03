@@ -1,0 +1,12 @@
+Algorithm Purpose: Output schedule data to PDF
+Tools to perform this: PDFBox API
+
+Approach 1: PDFBox API allows the programmer to "draw" lines using programmed steps.
+	One approach would be to hard-code each line of a "grid" that would include cell data
+	similar to a spreadsheet (or a typical work schedule) with employee names, dates listed
+	and the shift times, shift names etc. as needed.
+	
+	The overall concept would be to input the "drawing" of words while making the hard-coded lines
+	which reflect the dynamic schedule data. From there, alternative hard-coded line setups could be programmed
+	to make specific types of output. Such as outputting one employee's schedule only, or ALL employees schedules in
+	one PDF file.

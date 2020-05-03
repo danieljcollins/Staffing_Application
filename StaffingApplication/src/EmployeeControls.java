@@ -26,6 +26,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -34,10 +35,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 // EmployeeControls.java
 // This class will build a GUI window to allow the user to interact with Employee.java objects
@@ -49,7 +52,7 @@ public class EmployeeControls {
 	Stage stage;
 	TableView employeeTableView;
 
-	ObservableList employeeData = FXCollections.observableArrayList();
+	ObservableList<Employee> employeeData = FXCollections.observableArrayList();
 	Employee employee;
 	String employeeName;
 	
@@ -64,6 +67,8 @@ public class EmployeeControls {
 	DatePicker vacationEndDatePicker;
 	Button vacationSubmitButton;
 	
+	TableView vacationBookedTableView;
+	
 	public EmployeeControls(int empID, ObservableList<Employee> empData, TableView empTableView) {
 		this.employeeData = empData;
 		this.employee = (Employee)employeeData.get(empID);
@@ -74,9 +79,10 @@ public class EmployeeControls {
 	public void showEmployeeControls() {
 		stage = new Stage();
 		stage.setTitle("Employee Controls");
+		//stage.setHeight(1600);
+		stage.setWidth(900);
 		
-		GridPane gridPane = new GridPane();
-		gridPane.setMinSize(300, 300);
+		GridPane gridPane = new GridPane();				
 		gridPane.setHgap(25);
 		gridPane.setVgap(25);
 		gridPane.setPadding(new Insets(25,25,25,25));
@@ -108,12 +114,20 @@ public class EmployeeControls {
 		vacationEndDatePicker = new DatePicker();
 		vacationSubmitButton = new Button("Submit Vacation");
 		
+		Label currentlyBookedVacationLabel = new Label("Currently Booked Vacation:");
+		ObservableList<Vacation> vacationBooked = employee.getVacationDateList();
+		vacationBookedTableView = new TableView<Vacation>(vacationBooked);		
+		TableColumn dateCol = new TableColumn("Date");
+		dateCol.setMinWidth(150);
+		dateCol.setCellValueFactory( new PropertyValueFactory<Vacation, String>("vacationDateString") );		
+		vacationBookedTableView.getColumns().addAll(dateCol);
+		
 		// set training components (check boxes for each training type is probably sufficient with an update button to confirm the changes)
 		
 		trainingPoolCheckBox = new CheckBox("Pool");
 		trainingLinenCheckBox = new CheckBox("Linen");
 		trainingMdrCheckBox = new CheckBox("MDR");
-		trainingDockCheckBox = new CheckBox("Dock");		
+		trainingDockCheckBox = new CheckBox("Dock");
 		
 		// set the CheckBoxes to indicate the employees current level of training
 		if(employee.getTrainingPool() == true) {
@@ -127,25 +141,41 @@ public class EmployeeControls {
 		}
 		if(employee.getTrainingDock() == true) {
 			trainingDockCheckBox.setSelected(true);
-		}		
+		}
 		
-		// add components to gridPane layout
-		
+		// add UI components to gridPane layout
 		gridPane.add(employeeNameLabel, 0, 0);
 		
+		// sick status UI components
 		gridPane.add(sickStatusLabel, 0, 1);
 		gridPane.add(sickStatusCB, 1, 1);
 		
+		// vacation UI components
 		gridPane.add(vacactionStartLabel, 0, 2);
 		gridPane.add(vacactionEndLabel, 1, 2);
 		gridPane.add(vacationStartDatePicker, 0, 3);
 		gridPane.add(vacationEndDatePicker, 1, 3);
 		gridPane.add(vacationSubmitButton, 0, 4);
 		
-		gridPane.add(trainingPoolCheckBox, 0, 5);
-		gridPane.add(trainingLinenCheckBox, 1, 5);
-		gridPane.add(trainingMdrCheckBox, 2, 5);
-		gridPane.add(trainingDockCheckBox, 3, 5);		
+		gridPane.add(currentlyBookedVacationLabel, 0, 5);
+		gridPane.add(vacationBookedTableView, 0, 6);
+		
+		// training UI components
+		HBox trainingHBox = new HBox();		
+		//trainingHBox.setPadding(new Insets(0,0,25,25));
+		Label trainingLabel = new Label("Training:");
+		trainingHBox.getChildren().add(trainingLabel);
+		trainingHBox.getChildren().add(trainingPoolCheckBox);
+		trainingHBox.getChildren().add(trainingLinenCheckBox);
+		trainingHBox.getChildren().add(trainingMdrCheckBox);
+		trainingHBox.getChildren().add(trainingDockCheckBox);
+		trainingHBox.setMargin(trainingLabel, new Insets(0,25,0,0));
+		trainingHBox.setMargin(trainingPoolCheckBox, new Insets(0,25,0,0));
+		trainingHBox.setMargin(trainingLinenCheckBox, new Insets(0,25,0,0));
+		trainingHBox.setMargin(trainingMdrCheckBox, new Insets(0,25,0,0));
+		trainingHBox.setMargin(trainingDockCheckBox, new Insets(0,25,0,0));		
+		
+		gridPane.add(trainingHBox, 0, 7);		
 		
 		Scene scene = new Scene(gridPane);
 		
@@ -169,6 +199,19 @@ public class EmployeeControls {
 				employeeTableView.refresh();
 			}
 		});
+		
+		// this listener will track mouse-clicks on the Vacation Booked table; if the user clicks on a date a dialog will open asking
+		// if they would like to cancel the vacation, removing it from the list.
+		EventHandler<javafx.scene.input.MouseEvent> vacationBookedTableEventHandler = new EventHandler<javafx.scene.input.MouseEvent>() {
+			public void handle(javafx.scene.input.MouseEvent e) {
+				vacationBookedTableView.getSelectionModel().setCellSelectionEnabled(true);
+				if(e.getClickCount() == 2) {					
+					int vacationDateSelected = vacationBookedTableView.getSelectionModel().getSelectedIndex();
+					cancelVacationDay(vacationDateSelected);
+				}
+			}
+		};
+		vacationBookedTableView.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, vacationBookedTableEventHandler);        //Adding the event handler
 		
 		// this listener will modify the Employee.java object's training variables based on the CheckBox selections
 		trainingPoolCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -194,15 +237,25 @@ public class EmployeeControls {
 		// this button will take the LocalDate from each DatePicker component and send it to the Employee.java object, which will then add the LocalDates between those two dates (inclusive) to a list of booked vacation days. They will not be scheduled or available on these dates in other words to ScheduleBuilder.java
 		vacationSubmitButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
+				// TODO: Add verification checks on the user input at some point (checking the enddate is chronologically after the start date for example)
 				employee.addVacation( vacationStartDatePicker.getValue(), vacationEndDatePicker.getValue() );
-				
-				// test vacation date code
-				ArrayList<LocalDate> vacationDates = employee.getVacationDates();
-				for(int i = 0; i < vacationDates.size(); i++){	//employee.getVacationDates()){
-					System.out.println("Vacation Booked: " + vacationDates.get(i).toString());
-				}
-			}			
+				vacationBookedTableView.refresh();
+			}
 		});
+	}
+	
+	/* Mathod Name: cancelVacationDay()
+	 * Purpose: When the user clicks on a date in the booked vacation list, a dialog will open asking the user if they want to cancel that vacation day booking.
+	 * The user will be presented with a Yes and No button. 
+	 * Selecting Yes will cancel the day and remove it from the Employee object, and refresh the GUI in EmployeeControls.java to reflect the change
+	 */
+	public void cancelVacationDay(int index) {
+		// remove the selected vacation date from the Employee object
+		for(int i = 0; i < employeeData.size(); i++) {
+			if( employeeData.get(i).getEmployeeName().contains(employeeName)  ) {
+				employeeData.get(i).getVacationDateList().remove(index);
+			}
+		}
 	}
 
 }
