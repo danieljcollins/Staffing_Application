@@ -1,3 +1,10 @@
+/* UserInterface.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This file will build the user interface using JavaFX.
+ * From there, it will be the launcher of all other classes in this application.
+ */
+
 import javafx.application.Application;
 
 import javafx.beans.property.ObjectProperty;
@@ -41,9 +48,6 @@ import java.util.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-/* This file will build the user interface using JavaFX
- * From there, it will be the launcher of all other classes in this application. 
- */
 public class UserInterface extends Application{	
 	
     ObservableList<Employee> employeeData = FXCollections.observableArrayList(); // will contain DB data	

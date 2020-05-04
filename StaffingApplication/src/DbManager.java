@@ -1,3 +1,8 @@
+/* DBManager.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ */
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -43,8 +48,7 @@ public class DbManager {
 		return rsSize;
 	}
  
-    public DbManager() {
-    }
+    public DbManager() {    }
  
     public Connection createConnection() throws IOException, ClassNotFoundException, SQLException {
         Properties prop = new Properties();

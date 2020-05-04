@@ -1,3 +1,8 @@
+/* Shift.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ */
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 

@@ -1,3 +1,12 @@
+/* ScheduleControls.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: The purpose of this class is to open a small window that allows the user to view and change aspects of the employee
+ * that they selected in the Schedule tab. One example would be to change the scheduled employee's status to sick and 
+ * then open controls which will help the user pick an employee to call in order to fill that empty shift.
+ * After which, the employee's sick time will be incremented, and the Schedule will be changed to reflect the changes made.
+ */
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +46,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 //import javafx.util.Callback;
 
-
-// The purpose of this class is to open a small window that allows the user to view and change aspects of the employee
-// that they selected in the Schedule tab. One example would be to change the scheduled employee's status to sick and 
-// then open controls which will help the user pick an employee to call in order to fill that empty shift.
-// After which, the employee's sick time will be incremented, and the Schedule will be changed to reflect the changes made.
 public class ScheduleControls{
 	
 	// UI

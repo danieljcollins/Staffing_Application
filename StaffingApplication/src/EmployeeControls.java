@@ -1,3 +1,11 @@
+/* EmployeeControls.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: When the user double-clicks an employee name from the Employee tab of UserInterface.java, this
+ * class is called. This class handles a UI Window with several controls which allows the user to interact
+ * with the Employee object that was selected. One example is modifying the Employee's training boolean values.
+ */
+
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.util.ArrayList;

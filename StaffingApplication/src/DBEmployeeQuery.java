@@ -1,3 +1,10 @@
+/* DBEmployeeQuery.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This class handles the Connection and the ResultSet of the SQL query which will populate the
+ * application data pertaining to the Employee objects.
+ */
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 

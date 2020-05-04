@@ -1,4 +1,10 @@
-//import java.awt.print.PageFormat;
+/* GeneratePDF.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This class takes the Shift object ObservableArray and draws a table using PDFBox API calls, 
+ * inserting the object data as it goes to produce a human-readable work schedule for the pay period.
+ */
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

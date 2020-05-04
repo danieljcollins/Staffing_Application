@@ -1,6 +1,11 @@
+/* Vacation.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This class is used to store vacation dates that an employee has booked 
+ */
+
 import java.time.LocalDate;
 
-// this class is used to store vacation dates that an employee has booked
 public class Vacation {
 	
 	LocalDate vacationDate;

@@ -1,10 +1,13 @@
-// Employee.java
-// Each employee in the MariaDB database will have it's critical info transposed to Employee.java java objects
-// which will help schedule each employee
-// EmployeeBuilder.java will perform initialization of the objects
-// ShiftBuilder.java will then use these objects to create a schedule
+/* Employee.java
+* Author: Daniel Collins 
+* Date: May 2020
+* Purpose: Each employee in the MariaDB database will have it's critical info transposed to Employee.java java objects
+* which will help schedule each employee EmployeeBuilder.java will perform initialization of the objects
+* ShiftBuilder.java will then use these objects to create a schedule
+*/
 
 import java.util.Comparator;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;

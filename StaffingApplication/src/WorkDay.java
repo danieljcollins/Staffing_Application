@@ -1,6 +1,11 @@
+/* WorkDay.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This file isn't currently being used, but may be used in the future to contain Schedule data
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-// this file isn't currently being used
+
 public class WorkDay {
 	
 	ObservableList<Shift> shifts = FXCollections.observableArrayList();
@@ -55,3 +60,5 @@ public class WorkDay {
 	}
 
 }
+
+*/

@@ -1,3 +1,11 @@
+/* Schedule.java
+ * Author: Daniel Collins
+ * Purpose: The purpose of this file is to populate an ObservableArrayList for a JavaFX Table that 
+ * represents a two-week schedule for an organization. Essentially to schedule shifts to employees 
+ * based on employee data, shift data for that org automatically based on custom business rules for
+ * that organization.
+ */
+
 import java.util.ArrayList;
 import java.time.LocalTime;
 import java.time.LocalDate;
@@ -5,12 +13,6 @@ import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-/* Schedule.java
- * The purpose of this file is to populate an ObservableArrayList for a JavaFX Table that represents a two-week 
- * schedule for an organization.
- * Essentially to schedule shifts to employees based on employee data, shift data for that org automatically
- * based on custom business rules for that organization.
- */
 public class ScheduleBuilder{
 		
 	ObservableList<Shift> shifts = FXCollections.observableArrayList();

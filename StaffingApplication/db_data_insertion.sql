@@ -1,7 +1,11 @@
-/* This file is for inserting dummy-data into the database
+/* 
+This file is for inserting dummy-data into the database
 to allow the portfolio project to work in a simulated way.
 Eventually, some type of migration script would be 
 neccessary to use real data
+
+Author: Dan Collins
+Date: May 2020
 */
 
 -- shift table dummy data:

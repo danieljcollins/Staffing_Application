@@ -1,9 +1,14 @@
+/* Schedule.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This file isn't currently being used. 
+ * Similar to Shift, but to be used with JavaFX Table model.
+ * the key being that each Schedule object will represent one shift-type for a 14 day pay period.
+ * each day, a different employee may fill that shift, which is stored in this object
+ * there will be one shift object for every shift-type
+
 import java.time.LocalTime;
 
-// similar to shift, but to be used with JavaFX Table model
-// the key being that each Schedule object will represent one shift-type for a 14 day pay period. 
-// each day, a different employee may fill that shift, which is stored in this object
-// there will be one shift object for every shift-type
 public class Schedule {
 	String shiftName;
 	int shiftID;
@@ -125,3 +130,5 @@ public class Schedule {
 		this.endTime = et;
 	}
 }
+
+*/

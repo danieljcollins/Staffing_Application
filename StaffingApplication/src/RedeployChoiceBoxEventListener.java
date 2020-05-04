@@ -1,3 +1,9 @@
+/* RedeployChoiceBoxEventListener.java
+ * Author: Daniel Collins 
+ * Date: May 2020
+ * Purpose: This class is a simple ChangeListener that watches a ChoiceBox for changes.
+ */
+
 import javafx.beans.value.*;
 
 public class RedeployChoiceBoxEventListener implements ChangeListener{
